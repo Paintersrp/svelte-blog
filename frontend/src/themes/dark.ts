@@ -3,15 +3,21 @@ export const darkTheme = {
   primaryColor: '#007bff',
   primaryColorHover: '#007bffdd',
   secondaryColor: '#6c757d',
+  secondaryColorHover: '#6c757ddd',
   textPrimary: '#ffffff',
   textSecondary: '#b5b5b5',
   borderColor: '#444444',
   backgroundSidebar: '#333333',
+  backgroundNavbar: '#333333',
+  spacingXSmall: '0.35rem',
   spacingSmall: '0.5rem',
   spacingMedium: '1rem',
-  spacingLarge: '2rem',
+  spacingLarge: '1.5rem',
+  spacingXLarge: '2rem',
   fontSizeLg: '1.5rem',
   fontSizeBase: '1rem',
   borderRadius: '4px',
-  sidebarWidth: '200px'
+  sidebarWidth: '200px',
+  sidebarText: '#E1E8ED',
+  accentColor: '#FFAB4A'
 };

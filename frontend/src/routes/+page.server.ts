@@ -1,5 +1,5 @@
 export async function load({ fetch }) {
-  const response = await fetch(`http://localhost:4000/posts?pageSize=10&page=1`);
+  const response = await fetch(`http://localhost:4000/posts?pageSize=25&page=1`);
   const data = await response.json();
 
   return {

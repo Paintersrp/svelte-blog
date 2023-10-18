@@ -1,13 +1,19 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  // import { blur } from 'svelte/transition';
+  // import { quintOut } from 'svelte/easing';
+
   import { theme } from '$stores/theme';
   import { categories } from '$stores/categories';
+  import { loadCategories } from '$lib/loadCategories';
   import Navbar from '$comp/Navbar.svelte';
   import Footer from '$comp/Footer.svelte';
-  import { loadCategories } from '$lib/loadCategories';
+
+  export let data;
 
   let currentTheme = $theme;
-  let currentCategories = $categories
+  let currentCategories = $categories;
+  let pathname = '';
 
   const updateTheme = () => {
     const root = document.documentElement;
@@ -23,7 +29,8 @@
 
   $: {
     currentTheme = $theme;
-    currentCategories = $categories
+    currentCategories = $categories;
+    pathname = data.pathname;
 
     if (typeof window !== 'undefined') {
       updateTheme();
@@ -32,6 +39,12 @@
 </script>
 
 <Navbar />
+
+<!-- {#key pathname}
+  <main in:blur={{ delay: 250, amount: 3, duration: 200 }} out:blur={{ amount: 3, duration: 200 }}>
+    <slot />
+  </main>
+{/key} -->
 
 <main>
   <slot />

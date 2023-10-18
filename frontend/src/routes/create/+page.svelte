@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Modal from '$comp/CreateModal.svelte';
-  import Sidebar from '$comp/CreateSidebar.svelte';
+  import Modal from './CreateModal.svelte';
+  import Sidebar from './CreateSidebar.svelte';
   import Editor from '$comp/Editor.svelte';
   import { onMount, createEventDispatcher } from 'svelte';
 
@@ -43,7 +43,7 @@
   <button class="fab" on:click={() => (showModal = true)}>
     <i class="fas fa-solid fa-bars" />
   </button>
-  <Sidebar bind:postTitle={postTitle} {isMobile} {handleSubmit} {handleSaveDraft} />
+  <Sidebar bind:postTitle {isMobile} {handleSubmit} {handleSaveDraft} />
   <main id="content">
     <section>
       <Editor bind:content={postContent} />

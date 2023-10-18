@@ -9,7 +9,23 @@ declare global {
       title: string;
       content: string;
       id: number;
+      thumbnail: string;
     }
+  }
+
+  interface ViewTransition {
+    updateCallbackDone: Promise<void>;
+    ready: Promise<void>;
+    finished: Promise<void>;
+    skipTransition: () => void;
+  }
+
+  interface Document {
+    startViewTransition(updateCallback: () => Promise<void>): ViewTransition;
+  }
+
+  interface CSSStyleDeclaration {
+    viewTransitionName: string;
   }
 }
 

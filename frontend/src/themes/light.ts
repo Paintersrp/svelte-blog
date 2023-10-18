@@ -1,17 +1,30 @@
 export const lightTheme = {
-  background: '#ffffff',
-  primaryColor: '#007bff',
-  primaryColorHover: '#007bffdd',
-  secondaryColor: '#6c757d',
-  textPrimary: '#000000',
-  textSecondary: '#7f7f7f',
-  borderColor: '#e0e0e0',
-  backgroundSidebar: '#f5f5f5',
+  /* Colors */
+  background: '#F9FAFC',
+  backgroundNavbar: '#2C3A50',
+  backgroundSidebar: '#efefef',
+  primaryColor: '#286BFF',
+  primaryColorHover: '#1651DB',
+  secondaryColor: '#9DA9BB',
+  secondaryColorHover: '#7E8A96',
+  textPrimary: '#1E2430',
+  textSecondary: '#747C89',
+  borderColor: '#DCE2E9',
+
+  /* Spacing */
+  spacingXSmall: '0.35rem',
   spacingSmall: '0.5rem',
   spacingMedium: '1rem',
-  spacingLarge: '2rem',
+  spacingLarge: '1.5rem',
+  spacingXLarge: '2rem',
+
+  /* Font Sizes */
   fontSizeLg: '1.5rem',
   fontSizeBase: '1rem',
+
+  /* Tertiary */
   borderRadius: '4px',
-  sidebarWidth: '200px'
+  sidebarWidth: '200px',
+  sidebarText: '#E1E8ED',
+  accentColor: '#FFAB4A'
 };

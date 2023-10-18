@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   export let fd = 'row';
   export let ai = 'center';
   export let jc = 'center';
@@ -6,6 +6,7 @@
 </script>
 
 <div
+  class={$$restProps.class || ''}
   style="
       width: 100%;
       display: flex;
