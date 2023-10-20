@@ -4,7 +4,6 @@
   export let search: string;
 
   let currentPage: number = 1;
-  //   let pageSize: number = 25;
 
   let categoryOptions = [
     { id: 1, value: '', text: 'All' },
@@ -28,7 +27,6 @@
     totalPosts = response.data.count;
   };
 
-  $: defaultCategory = categoryOptions.find((o) => o.id === 1);
   $: pageSize = 25;
 </script>
 

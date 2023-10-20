@@ -7,7 +7,6 @@ import { SETTINGS } from "./settings/settings";
 import { APP_CACHE } from "./settings/internal/cache"; // After other internal, after ORM
 import { InlineStylesProcessor } from "./core/server/managers/generation/inline-styles/InlineStylesProcessor";
 import { User } from "./core/features/user";
-import { seedPosts } from "./models/post/model";
 import { seedData } from "./utils/seedData";
 
 const koa = new Koa();
@@ -49,4 +48,4 @@ watcher
 
 console.log("Watching for changes...");
 
-// seedData();
+seedData();

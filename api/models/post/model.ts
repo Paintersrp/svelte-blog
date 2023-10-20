@@ -9,7 +9,6 @@ import {
   InferCreationAttributes,
 } from "sequelize";
 
-import { faker } from "@faker-js/faker";
 import { SyModel } from "../../core/models/SyModel";
 import { Field, Register } from "../../core/lib";
 import { ORM } from "../../settings";
@@ -64,6 +63,21 @@ export default class Post extends SyModel<
   })
   public status: string;
 
+  @Field({
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
+    verbose: "Highlighted",
+  })
+  public highlighted!: boolean;
+
+  @Field({
+    type: DataTypes.STRING,
+    allowNull: true,
+    verbose: "Thumbnail URL",
+  })
+  public thumbnailUrl!: string | null;
+
   public getTags: BelongsToManyGetAssociationsMixin<Tag>;
   public setTags: BelongsToManySetAssociationsMixin<Tag, number>;
 
@@ -99,20 +113,3 @@ Comment.belongsTo(Post, { foreignKey: "postId" });
 
 Post.belongsToMany(Tag, { through: "PostTags", foreignKey: "postId" });
 Tag.belongsToMany(Post, { through: "PostTags", foreignKey: "tagId" });
-
-export async function seedPosts(count: number) {
-  try {
-    const postData = Array.from({ length: count }).map(() => ({
-      title: faker.lorem.sentence(),
-      content: faker.lorem.paragraphs(),
-      publishedAt: faker.date.past(),
-      authorId: Math.floor(Math.random() * 10) + 1,
-      status: "published",
-    }));
-
-    await Post.bulkCreate(postData);
-    console.log("Post seeding completed successfully.");
-  } catch (error: any) {
-    console.error("Post seeding failed:", error);
-  }
-}

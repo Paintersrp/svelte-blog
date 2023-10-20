@@ -77,6 +77,5 @@
   main {
     background-color: var(--background);
     color: var(--textPrimary);
-    padding-right: var(--spacingMedium);
   }
 </style>

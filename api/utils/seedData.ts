@@ -25,13 +25,15 @@ export async function seedData() {
     const tags = await Tag.bulkCreate(tagData);
     console.log("Tag seeding completed successfully.");
 
-    const postData = Array.from({ length: 50 }).map(() => ({
+    const postData = Array.from({ length: 50 }).map((_, index) => ({
       title: faker.lorem.sentence(),
       content: faker.lorem.paragraphs(),
       authorId: Math.floor(Math.random() * 10) + 1,
       categoryId: categories[Math.floor(Math.random() * categories.length)].id,
       publishedAt: faker.date.past(),
       status: "published",
+      highlighted: index < 3,
+      thumbnailUrl: `https://source.unsplash.com/1400x${900 + index}/?service`,
     }));
 
     const posts = await Post.bulkCreate(postData);

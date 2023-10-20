@@ -9,7 +9,8 @@ declare global {
       title: string;
       content: string;
       id: number;
-      thumbnail: string;
+      thumbnailUrl: string;
+      highlighted: boolean;
     }
   }
 
