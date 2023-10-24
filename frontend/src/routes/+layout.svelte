@@ -1,19 +1,14 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  // import { blur } from 'svelte/transition';
-  // import { quintOut } from 'svelte/easing';
+  import '../app.css';
 
   import { theme } from '$stores/theme';
-  import { categories } from '$stores/categories';
-  import { loadCategories } from '$lib/loadCategories';
-  import Navbar from '$comp/Navbar.svelte';
+  import Navbar from '$comp/navbar/Navbar.svelte';
   import Footer from '$comp/Footer.svelte';
 
   export let data;
 
   let currentTheme = $theme;
-  let currentCategories = $categories;
-  let pathname = '';
+  let pathname = data.pathname || '';
 
   const updateTheme = () => {
     const root = document.documentElement;
@@ -23,13 +18,8 @@
     });
   };
 
-  onMount(async () => {
-    await loadCategories();
-  });
-
   $: {
     currentTheme = $theme;
-    currentCategories = $categories;
     pathname = data.pathname;
 
     if (typeof window !== 'undefined') {
@@ -39,12 +29,6 @@
 </script>
 
 <Navbar />
-
-<!-- {#key pathname}
-  <main in:blur={{ delay: 250, amount: 3, duration: 200 }} out:blur={{ amount: 3, duration: 200 }}>
-    <slot />
-  </main>
-{/key} -->
 
 <main>
   <slot />
@@ -63,6 +47,8 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    background-color: var(--background);
+    color: var(--textPrimary);
   }
 
   :global(a) {
@@ -77,5 +63,6 @@
   main {
     background-color: var(--background);
     color: var(--textPrimary);
+    padding-top: 4rem;
   }
 </style>

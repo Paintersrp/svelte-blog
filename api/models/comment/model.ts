@@ -3,12 +3,24 @@ import { DataTypes, InferAttributes, InferCreationAttributes } from "sequelize";
 import { SyModel } from "../../core/models/SyModel";
 import { Field, Register } from "../../core/lib";
 import { ORM } from "../../settings";
+import { User } from "../../core/features/user";
 
 @Register
 export default class Comment extends SyModel<
   InferAttributes<Comment>,
   InferCreationAttributes<Comment>
 > {
+  @Field({
+    type: DataTypes.INTEGER,
+    references: {
+      model: User,
+      key: "id",
+    },
+    allowNull: false,
+    verbose: "Author ID",
+  })
+  public authorId!: number;
+
   @Field({
     type: DataTypes.TEXT,
     allowNull: false,
@@ -34,3 +46,6 @@ Comment.init(
     sequelize: ORM.database,
   }
 );
+
+User.hasMany(Comment, { foreignKey: "authorId" });
+Comment.belongsTo(User, { foreignKey: "authorId" });

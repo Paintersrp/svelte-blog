@@ -1,8 +1,8 @@
-import { FindOptions, Model, ModelStatic } from 'sequelize';
-import { Context } from 'koa';
+import { FindOptions, Model, ModelStatic } from "sequelize";
+import { Context } from "koa";
 
-import { CustomWhere, QueryType } from './types';
-import { SyValidator } from '../../../validators/SyValidator';
+import { CustomWhere, QueryType } from "./types";
+import { SyValidator } from "../../../validators/SyValidator";
 
 import {
   FilterService,
@@ -10,7 +10,7 @@ import {
   ScopeService,
   SearchService,
   SortingService,
-} from './services';
+} from "./services";
 
 /**
  * Class responsible for processing Koa context query parameters to generate Sequelize FindOptions.
@@ -67,6 +67,7 @@ export class QueryProcessor {
    */
   private initialializeFindOptions(query: QueryType): FindOptions {
     return {
+      distinct: true,
       offset: this.paginationService.calculateOffset(query),
       limit: this.paginationService.calculateLimit(query.pageSize),
       where: {} as CustomWhere,
@@ -79,7 +80,10 @@ export class QueryProcessor {
    * @param {FindOptions} findOptions - Sequelize FindOptions object to be updated.
    * @param {QueryType} query - The query parameters from the context.
    */
-  private processPaginationParams(findOptions: FindOptions, query: QueryType): void {
+  private processPaginationParams(
+    findOptions: FindOptions,
+    query: QueryType
+  ): void {
     this.paginationService.addCursorPagination(findOptions, query);
   }
 
@@ -101,7 +105,11 @@ export class QueryProcessor {
    * @param {QueryType} query - The query parameters from the context.
    * @param {string} path - The URL path context.
    */
-  private processFilterParams(findOptions: FindOptions, query: QueryType, path: string): void {
+  private processFilterParams(
+    findOptions: FindOptions,
+    query: QueryType,
+    path: string
+  ): void {
     this.filterService.addFiltering(findOptions, path, query);
     this.filterService.addRangeFilters(findOptions, query);
     this.filterService.addComplexFiltering(findOptions, query);
@@ -113,7 +121,10 @@ export class QueryProcessor {
    * @param {FindOptions} findOptions - Sequelize FindOptions object to be updated.
    * @param {QueryType} query - The query parameters from the context.
    */
-  private processSearchParams(findOptions: FindOptions, query: QueryType): void {
+  private processSearchParams(
+    findOptions: FindOptions,
+    query: QueryType
+  ): void {
     this.searchService.addSearch(findOptions, query);
   }
 
@@ -124,7 +135,11 @@ export class QueryProcessor {
    * @param {QueryType} query - The query parameters from the context.
    * @param {string} path - The URL path context.
    */
-  private processSortParams(findOptions: FindOptions, query: QueryType, path: string): void {
+  private processSortParams(
+    findOptions: FindOptions,
+    query: QueryType,
+    path: string
+  ): void {
     this.sortingService.addSorting(findOptions, path, query);
   }
 }

@@ -1,15 +1,15 @@
-import { RouterContext } from 'koa-router';
-import { Logger } from 'pino';
-import { ModelStatic, FindOptions, Transaction, Model } from 'sequelize';
+import { RouterContext } from "koa-router";
+import { Logger } from "pino";
+import { ModelStatic, FindOptions, Transaction, Model } from "sequelize";
 
-import { HttpStatus } from '../../lib';
-import { NotFoundError } from '../../errors/client';
-import { ControllerMixinOptions } from '../types';
-import { RequestProcessor } from './request/RequestProcessor';
-import { QueryProcessor } from './queries/QueryProcessor';
-import { ValidationResponses } from '../../lib/responses';
-import { FieldDTO } from './types';
-import { SyValidator } from '../../validators/SyValidator';
+import { HttpStatus } from "../../lib";
+import { NotFoundError } from "../../errors/client";
+import { ControllerMixinOptions } from "../types";
+import { RequestProcessor } from "./request/RequestProcessor";
+import { QueryProcessor } from "./queries/QueryProcessor";
+import { ValidationResponses } from "../../lib/responses";
+import { FieldDTO } from "./types";
+import { SyValidator } from "../../validators/SyValidator";
 
 /**
  * SyMixin is an abstract class designed to be extended by other mixin classes.
@@ -75,7 +75,7 @@ export abstract class SyMixin {
     error?: string
   ): Object {
     return {
-      status: status >= 200 && status < 300 ? 'success' : 'error',
+      status: status >= 200 && status < 300 ? "success" : "error",
       message,
       data: body,
       errorCode: error || undefined,
@@ -90,8 +90,15 @@ export abstract class SyMixin {
    * @param {Transaction} transaction - The Sequelize transaction.
    * @returns {Promise<Model>} A promise that resolves to the found item.
    */
-  protected async findItemById(id: string, transaction?: Transaction): Promise<Model> {
-    const item = await this.model.findByPk(id, { transaction });
+  protected async findItemById(
+    id: string,
+    findOptions: Omit<FindOptions<any>, "where">,
+    transaction?: Transaction
+  ): Promise<Model> {
+    const item = await this.model.findByPk(id, {
+      ...findOptions,
+      transaction,
+    });
     this.assertItemExists(item, ValidationResponses.ID_FAIL);
     return item;
   }
@@ -101,7 +108,10 @@ export abstract class SyMixin {
    *
    * @throws {NotFoundError} If the item is not found.
    */
-  private assertItemExists(item: Model, failMsg: string = ValidationResponses.ITEM_FAIL): void {
+  private assertItemExists(
+    item: Model,
+    failMsg: string = ValidationResponses.ITEM_FAIL
+  ): void {
     if (!item) {
       throw new NotFoundError(failMsg, item);
     }
@@ -120,7 +130,10 @@ export abstract class SyMixin {
     value: string | number,
     transaction?: Transaction
   ): Promise<Model> {
-    const item = await this.model.findOne({ where: { [field]: value }, transaction });
+    const item = await this.model.findOne({
+      where: { [field]: value },
+      transaction,
+    });
     this.assertItemExists(item, ValidationResponses.ID_FAIL);
     return item;
   }
@@ -132,7 +145,7 @@ export abstract class SyMixin {
    * @returns {string} A promise that resolves to the found item.
    */
   protected getModelName(item: Model): string {
-    const modelName = item.constructor.name.replace('SequelizeModel', '');
+    const modelName = item.constructor.name.replace("SequelizeModel", "");
     return modelName;
   }
 
@@ -166,7 +179,10 @@ export abstract class SyMixin {
    *
    * @see RequestProcessor#processPayload
    */
-  protected processPayload(ctx: RouterContext, arrayCheck: boolean = false): unknown {
+  protected processPayload(
+    ctx: RouterContext,
+    arrayCheck: boolean = false
+  ): unknown {
     return this.requestProcessor.processPayload(ctx, arrayCheck);
   }
 
@@ -193,7 +209,10 @@ export abstract class SyMixin {
    *
    * @see RequestProcessor#processHeader
    */
-  protected processHeader(ctx: RouterContext, headerName: string): string | string[] | undefined {
+  protected processHeader(
+    ctx: RouterContext,
+    headerName: string
+  ): string | string[] | undefined {
     return this.requestProcessor.processHeader(ctx, headerName);
   }
 

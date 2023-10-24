@@ -190,3 +190,17 @@ User.init(
 
 Profile.belongsTo(User, { targetKey: "id" });
 User.hasOne(Profile, { sourceKey: "id" });
+
+// User.addHook("afterFind", (instances) => {
+//   if (Array.isArray(instances)) {
+//     instances.forEach((instance) => {
+//       // delete or modify instance.dataValues.field_name;
+//       delete instance.dataValues.password;
+//       delete instance.dataValues.salt;
+//     });
+//   } else if (instances) {
+//     // delete or modify instance.dataValues.field_name;
+//     delete instances.dataValues.password;
+//     delete instances.dataValues.salt;
+//   }
+// });

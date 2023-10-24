@@ -1,7 +1,7 @@
 export const darkTheme = {
   background: '#2c2c2c',
-  primaryColor: '#007bff',
-  primaryColorHover: '#007bffdd',
+  primaryColor: '#286BFF',
+  primaryColorHover: '#1651DB',
   secondaryColor: '#6c757d',
   secondaryColorHover: '#6c757ddd',
   textPrimary: '#ffffff',

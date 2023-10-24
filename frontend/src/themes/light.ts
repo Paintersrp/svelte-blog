@@ -25,6 +25,6 @@ export const lightTheme = {
   /* Tertiary */
   borderRadius: '4px',
   sidebarWidth: '200px',
-  sidebarText: '#E1E8ED',
-  accentColor: '#FFAB4A'
+  sidebarText: '#ecf0f1',
+  accentColor: '#e74c3c'
 };

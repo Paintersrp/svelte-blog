@@ -5,12 +5,6 @@
 
   let currentPage: number = 1;
 
-  let categoryOptions = [
-    { id: 1, value: '', text: 'All' },
-    { id: 2, value: 'tech', text: 'Tech' },
-    { id: 3, value: 'lifestyle', text: 'Lifestyle' }
-  ];
-
   let pageSizeOptions = [
     { id: 1, value: '', text: 10 },
     { id: 2, value: 25, text: 25 },
@@ -71,13 +65,13 @@
 <style>
   #sidebar {
     min-width: var(--sidebarWidth);
-    background-color: var(--backgroundSidebar);
+    background-color: var(--background);
     padding: var(--spacingSmall);
     position: sticky;
     top: 0;
     height: calc(100vh);
     overflow-y: auto;
-    box-shadow: 2px 0px 8px rgba(0, 0, 0, 0.05);
+    margin-top: 18px;
   }
 
   .search {
@@ -97,5 +91,11 @@
   h2 {
     margin: 0 0 var(--spacingSmall) 0;
     font-size: var(--fontSizeLg);
+  }
+
+  @media (max-width: 768px) {
+    #sidebar {
+      display: none;
+    }
   }
 </style>

@@ -1,10 +1,10 @@
-import Koa, { EventEmitter, Middleware } from 'koa';
-import Router from 'koa-router';
-import { Logger } from 'pino';
-import { Model, ModelStatic, Optional } from 'sequelize';
-import * as Yup from 'yup';
+import Koa, { EventEmitter, Middleware } from "koa";
+import Router from "koa-router";
+import { Logger } from "pino";
+import { Model, ModelStatic, Optional } from "sequelize";
+import * as Yup from "yup";
 
-import { ETag, Monitor } from '../lib/decorators/controllers';
+import { ETag } from "../lib/decorators/controllers";
 import {
   SyCreateMixin,
   SyDeleteMixin,
@@ -12,10 +12,10 @@ import {
   SyMetaMixin,
   SyMiddlewareMixin,
   SyUpdateMixin,
-} from './mixins';
-import { ControllerMixins, SyControllerOptions } from './types';
-import { TransactionManager } from '../transactions';
-import { InternalMethodsToBind } from './enums';
+} from "./mixins";
+import { ControllerMixins, SyControllerOptions } from "./types";
+import { TransactionManager } from "../transactions";
+import { InternalMethodsToBind } from "./enums";
 
 /**
  * @class SyController
@@ -77,7 +77,12 @@ export class SyController extends EventEmitter {
    * @param {Logger} options.logger - The instance of application logger.
    * @param {Middleware[]} [options.middlewares] - An array of custom middlewares to be used in this controller.
    */
-  constructor({ model, schema, logger, middlewares = [] }: SyControllerOptions) {
+  constructor({
+    model,
+    schema,
+    logger,
+    middlewares = [],
+  }: SyControllerOptions) {
     super();
 
     this.model = model;
@@ -104,7 +109,10 @@ export class SyController extends EventEmitter {
       update: new SyUpdateMixin(mixinOptions),
       delete: new SyDeleteMixin(mixinOptions),
       meta: new SyMetaMixin(mixinOptions),
-      middleware: new SyMiddlewareMixin({ ...mixinOptions, schema: this.schema }),
+      middleware: new SyMiddlewareMixin({
+        ...mixinOptions,
+        schema: this.schema,
+      }),
     };
   }
 
@@ -165,7 +173,6 @@ export class SyController extends EventEmitter {
    * Returns all instances of the model.
    * @see SyReadMixin#all
    */
-  @Monitor
   public async all(ctx: Router.RouterContext) {
     return this.mixins.read.all(ctx);
   }
@@ -183,7 +190,11 @@ export class SyController extends EventEmitter {
    * @see SyCreateMixin#create
    */
   public async create(ctx: Router.RouterContext): Promise<void> {
-    return this.transactionManager.performTransaction(ctx, 'create', this.mixins.create);
+    return this.transactionManager.performTransaction(
+      ctx,
+      "create",
+      this.mixins.create
+    );
   }
 
   /**
@@ -191,7 +202,11 @@ export class SyController extends EventEmitter {
    * @see SyUpdateMixin#update
    */
   public async update(ctx: Router.RouterContext): Promise<void> {
-    return this.transactionManager.performTransaction(ctx, 'update', this.mixins.update);
+    return this.transactionManager.performTransaction(
+      ctx,
+      "update",
+      this.mixins.update
+    );
   }
 
   /**
@@ -199,7 +214,11 @@ export class SyController extends EventEmitter {
    * @see SyDeleteMixin#delete
    */
   public async delete(ctx: Router.RouterContext): Promise<void> {
-    return this.transactionManager.performTransaction(ctx, 'delete', this.mixins.delete);
+    return this.transactionManager.performTransaction(
+      ctx,
+      "delete",
+      this.mixins.delete
+    );
   }
 
   /**

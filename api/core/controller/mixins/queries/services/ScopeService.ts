@@ -1,7 +1,7 @@
-import { FindOptions } from 'sequelize';
+import { FindOptions } from "sequelize";
 
-import { server } from '../../../../../server';
-import { BadRequestError } from '../../../../errors/client';
+import { server } from "../../../../../server";
+import { BadRequestError } from "../../../../errors/client";
 
 /**
  * Service class for managing field selection and model associations in database queries.
@@ -15,7 +15,7 @@ export class ScopeService {
    */
   public addFields(findOptions: FindOptions, fields?: string): void {
     if (fields) {
-      findOptions.attributes = fields.split(',');
+      findOptions.attributes = fields.split(",");
     }
   }
 
@@ -26,14 +26,33 @@ export class ScopeService {
    * @param {string} [includes] - A comma-separated string representing the names of the associated models to be included.
    */
   public addIncludes(findOptions: FindOptions, includes?: string): void {
-    const includeFields = includes?.split(',');
+    const includeFields = includes?.split(",");
     if (includeFields) {
-      findOptions.include = includeFields.map((modelName) => {
-        const model = server.ORM.database.models[modelName];
-        if (!model) {
-          throw new BadRequestError(`Invalid model name: ${modelName}`);
+      findOptions.include = includeFields.map((includeField) => {
+        const nestedIncludeMatch = includeField.match(/^(\w+)\[(\w+)\]$/);
+        if (nestedIncludeMatch) {
+          const [_, parentModelName, nestedModelName] = nestedIncludeMatch;
+          const parentModel = server.ORM.database.models[parentModelName];
+          const nestedModel = server.ORM.database.models[nestedModelName];
+          if (!parentModel || !nestedModel) {
+            throw new BadRequestError(
+              `Invalid model name: ${
+                parentModel ? nestedModelName : parentModelName
+              }`
+            );
+          }
+          return {
+            model: parentModel,
+            include: [nestedModel],
+          };
+        } else {
+          // Handle regular include
+          const model = server.ORM.database.models[includeField];
+          if (!model) {
+            throw new BadRequestError(`Invalid model name: ${includeField}`);
+          }
+          return model;
         }
-        return model;
       });
     }
   }

@@ -1,4 +1,4 @@
-import { WhereAttributeHash, Op } from 'sequelize';
+import { WhereAttributeHash, Op } from "sequelize";
 
 /**
  * The interface for query parameters. Supports basic pagination, field selection, sorting, filtering, and searching.
@@ -8,7 +8,7 @@ export interface QueryParams {
   pageSize?: number;
   fields?: string;
   sort?: string;
-  sortOrder?: 'asc' | 'desc';
+  sortOrder?: "asc" | "desc";
   filter?: string;
   column?: string;
   search?: string;
@@ -19,13 +19,14 @@ export interface QueryParams {
   before?: number;
   after?: number;
   complexFilter?: string;
+  distinct?: boolean;
 }
 
 /**
  * The interface for advanced filter options. Supports greater than, less than, in, not in, like, not equal, and between conditions.
  */
 export interface FilterOptions {
-  [key: string]: number | string | string[] | undefined;
+  [key: string]: number | string | string[] | boolean | undefined;
   greaterThan?: string;
   lessThan?: string;
   in?: string[];

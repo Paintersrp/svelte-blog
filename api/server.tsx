@@ -48,4 +48,4 @@ watcher
 
 console.log("Watching for changes...");
 
-seedData();
+// seedData();

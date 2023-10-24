@@ -10,22 +10,35 @@ export async function seedData() {
     User.seedUser(25);
 
     const categoryData = [
-      "Technology",
-      "Health",
-      "Lifestyle",
-      "Science",
-      "Finance",
+      "JavaScript",
+      "TypeScript",
+      "Python",
+      "Rust",
+      "C#",
+      "C++",
+      "Java",
+      "Svelte",
+      "React",
+      "NodeJS",
+      "NextJS",
+      "Django",
     ].map((name) => ({ name }));
+
     const categories = await Category.bulkCreate(categoryData);
     console.log("Category seeding completed successfully.");
 
-    const tagData = ["JavaScript", "Wellness", "AI", "Economy", "Research"].map(
-      (name) => ({ name })
-    );
+    const tagData = [
+      "Frontend",
+      "Backend",
+      "AI",
+      "Machine Learning",
+      "Web Dev",
+    ].map((name) => ({ name }));
+    
     const tags = await Tag.bulkCreate(tagData);
     console.log("Tag seeding completed successfully.");
 
-    const postData = Array.from({ length: 50 }).map((_, index) => ({
+    const postData = Array.from({ length: 125 }).map((_, index) => ({
       title: faker.lorem.sentence(),
       content: faker.lorem.paragraphs(),
       authorId: Math.floor(Math.random() * 10) + 1,
