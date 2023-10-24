@@ -1,37 +1,33 @@
 <script lang="ts">
   import '../app.css';
+  import { fly } from 'svelte/transition';
+  import { backIn, backOut } from 'svelte/easing';
+  import { afterNavigate, disableScrollHandling } from '$app/navigation';
 
-  import { theme } from '$stores/theme';
   import Navbar from '$comp/navbar/Navbar.svelte';
   import Footer from '$comp/Footer.svelte';
 
   export let data;
 
-  let currentTheme = $theme;
-  let pathname = data.pathname || '';
-
-  const updateTheme = () => {
-    const root = document.documentElement;
-
-    Object.keys(currentTheme).forEach((key) => {
-      root.style.setProperty(`--${key}`, currentTheme[key as keyof typeof currentTheme]);
-    });
-  };
-
-  $: {
-    currentTheme = $theme;
-    pathname = data.pathname;
-
-    if (typeof window !== 'undefined') {
-      updateTheme();
-    }
-  }
+  afterNavigate(() => {
+    disableScrollHandling();
+    setTimeout(() => {
+      scrollTo({ top: 0, behavior: 'instant' });
+    }, 300);
+  });
 </script>
 
 <Navbar />
 
 <main>
-  <slot />
+  {#key data.url}
+    <div
+      in:fly={{ x: -100, duration: 400, delay: 400, easing: backOut }}
+      out:fly={{ x: 100, duration: 400, easing: backIn }}
+    >
+      <slot />
+    </div>
+  {/key}
 </main>
 
 <Footer />
@@ -49,6 +45,7 @@
     box-sizing: border-box;
     background-color: var(--background);
     color: var(--textPrimary);
+    scroll-behavior: smooth;
   }
 
   :global(a) {

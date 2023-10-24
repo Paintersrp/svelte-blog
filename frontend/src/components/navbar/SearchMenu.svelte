@@ -1,11 +1,18 @@
 <script lang="ts">
   import { slide } from 'svelte/transition';
-  import { quintOut } from 'svelte/easing';
+  import { sineInOut } from 'svelte/easing';
   import { estimateReadTime } from '$lib/estimateReadTime';
   import { normalizeDate } from '$lib/normalizeDate';
 
   export let searchResults: App.Post[];
   export let showDropdown: boolean;
+
+  const handleLinkClick = () => {
+    showDropdown = false;
+    document.body.style.overflow = '';
+
+    console.log(showDropdown);
+  };
 
   $: {
     if (showDropdown) {
@@ -17,12 +24,13 @@
 </script>
 
 <div
-  transition:slide={{ delay: 0, duration: 300, easing: quintOut, axis: 'y' }}
+  transition:slide={{ duration: 300, easing: sineInOut, axis: 'y' }}
   class="absolute top-full mt-2 w-full bg-white border border-gray-300 rounded shadow-lg overflow-y-auto search-menu"
 >
   {#each searchResults as { title, id, User, publishedAt, content, Category, Tags, Comments }, index}
     <a
       href={`/${id}`}
+      on:click={handleLinkClick}
       class={`block px-3 py-1.5 text-gray-700 hover:bg-gray-100 rounded mb-2 last:mb-0 ${
         index !== searchResults.length - 1 ? 'divider' : ''
       }`}

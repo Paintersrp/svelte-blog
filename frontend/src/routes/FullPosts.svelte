@@ -1,7 +1,10 @@
 <script lang="ts">
+  import { createEventDispatcher } from 'svelte';
+  import { sineInOut } from 'svelte/easing';
+  import { slide } from 'svelte/transition';
+
   import { estimateReadTime } from '$lib/estimateReadTime';
   import { normalizeDate } from '$lib/normalizeDate';
-  import { createEventDispatcher } from 'svelte';
 
   export let posts: App.Post[];
 
@@ -15,7 +18,10 @@
 <section class="px-4 md:px-8 py-2 lg:py-8">
   <div class="divide-y divide-gray-200">
     {#each posts as post}
-      <div class="flex-col items-start py-2 md:py-6">
+      <div
+        class="flex-col items-start py-2 md:py-6"
+        transition:slide={{ duration: 500, easing: sineInOut, axis: 'y' }}
+      >
         <div class="flex">
           {#if post.thumbnailUrl}
             <div class="mr-4 flex flex-shrink-0 justify-center items-center">

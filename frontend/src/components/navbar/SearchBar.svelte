@@ -5,8 +5,8 @@
 
   let searchQuery = '';
   let searchResults: App.Post[] = [];
-  
-  $: showDropdown = searchResults.length > 0;
+
+  $: showDropdown = false;
 
   const debouncedSearch = debounce(async (query) => {
     const response = await fetch(

@@ -12,7 +12,8 @@
   }
 </script>
 
-<article class="max-w-7xl mx-auto my-4 p-4 sm:p-6 lg:p-8" transition:blur={{ amount: 5 }}>
+<!-- <article class="max-w-7xl mx-auto my-4 p-4 sm:p-6 lg:p-8" transition:blur={{ amount: 5 }}> -->
+<article class="max-w-7xl mx-auto my-4 p-4 sm:p-6 lg:p-8">
   <div class="mb-10 flex justify-center">
     {#if post.thumbnailUrl}
       <img
