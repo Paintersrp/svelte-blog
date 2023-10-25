@@ -1,26 +1,32 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  import { sineInOut } from 'svelte/easing';
+  import { sineIn, sineOut } from 'svelte/easing';
   import { slide } from 'svelte/transition';
 
   import { estimateReadTime } from '$lib/estimateReadTime';
   import { normalizeDate } from '$lib/normalizeDate';
 
   export let posts: App.Post[];
+  export let currentCategories: (number | string)[];
 
   const dispatch = createEventDispatcher();
 
   const hidePost = (value: number) => {
     dispatch('hidePost', value);
   };
+
+  $: filteredPosts = currentCategories.includes('All')
+    ? posts
+    : posts.filter((post) => currentCategories.includes(post.Category.id));
 </script>
 
 <section class="px-4 md:px-8 py-2 lg:py-8">
   <div class="divide-y divide-gray-200">
-    {#each posts as post}
+    {#each filteredPosts as post (post.id)}
       <div
         class="flex-col items-start py-2 md:py-6"
-        transition:slide={{ duration: 500, easing: sineInOut, axis: 'y' }}
+        in:slide={{ duration: 300, easing: sineIn, axis: 'y' }}
+        out:slide={{ duration: 300, easing: sineOut, axis: 'y' }}
       >
         <div class="flex">
           {#if post.thumbnailUrl}

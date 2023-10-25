@@ -4,6 +4,7 @@
   import StarterKit from '@tiptap/starter-kit';
 
   export let content: string = '<p>Hello World</p>';
+
   let editor: Editor | undefined;
   let element: HTMLElement;
   const dispatch = createEventDispatcher();
@@ -264,7 +265,7 @@
   }
 
   .editor {
-    min-height: 200px;
+    min-height: 600px;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     line-height: 1.6;
     font-size: 16px;

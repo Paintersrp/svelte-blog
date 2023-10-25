@@ -1,15 +1,16 @@
-import { redirect } from '@sveltejs/kit';
+// import { redirect } from '@sveltejs/kit';
+
+export const prerender = true;
 
 export const actions = {
-  login: async ({ cookies, request }) => {
+  login: async ({ request }) => {
     const data = await request.formData();
     const email = data.get('email');
     const password = data.get('password');
+    const remember = data.get('remember');
 
-    console.log(email, password, cookies);
+    console.log(email, password, remember);
 
-    // cookies.set('sessionid', await db.createSession(user));
-
-    throw redirect(303, '/');
+    // throw redirect(303, '/');
   }
 };

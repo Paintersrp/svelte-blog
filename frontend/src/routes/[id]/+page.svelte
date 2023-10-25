@@ -1,18 +1,28 @@
 <script lang="ts">
-  import { blur } from 'svelte/transition';
-
   import { normalizeDate } from '$lib/normalizeDate.js';
   export let data;
   $: post = data.post;
   let newComment = '';
 
-  function handleCommentSubmit() {
-    console.log(newComment);
-    newComment = '';
+  async function handleCommentSubmit() {
+    const response = await fetch('http://localhost:4000/comments', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ content: newComment, postId: post.id, authorId: 1 })
+    });
+
+    if (response.ok) {
+      const createdComment = await response.json();
+      post.Comments = [...post.Comments, createdComment];
+      newComment = '';
+    } else {
+      console.error('Failed to post comment:', await response.text());
+    }
   }
 </script>
 
-<!-- <article class="max-w-7xl mx-auto my-4 p-4 sm:p-6 lg:p-8" transition:blur={{ amount: 5 }}> -->
 <article class="max-w-7xl mx-auto my-4 p-4 sm:p-6 lg:p-8">
   <div class="mb-10 flex justify-center">
     {#if post.thumbnailUrl}

@@ -145,13 +145,13 @@ export class SyController extends EventEmitter {
     return await this.schema.validate(fields, { abortEarly: false });
   }
 
-  /**
-   * Middleware to cache the response of an endpoint and serve the cached response if available.
-   * @see SyMiddlewareMixin#cacheEndpoint
-   */
-  public async cacheEndpoint(ctx: Router.RouterContext, next: Koa.Next) {
-    return await this.mixins.middleware.cacheEndpoint(ctx, next);
-  }
+  // /**
+  //  * Middleware to cache the response of an endpoint and serve the cached response if available.
+  //  * @see SyMiddlewareMixin#cacheEndpoint
+  //  */
+  // public async cacheEndpoint(ctx: Router.RouterContext, next: Koa.Next) {
+  //   return await this.mixins.middleware.cacheEndpoint(ctx, next);
+  // }
 
   /**
    * OPTIONS endpoint.
@@ -166,6 +166,7 @@ export class SyController extends EventEmitter {
    * @see SyMiddlewareMixin#validateBody
    */
   public async validateBody(ctx: Router.RouterContext, next: Koa.Next) {
+    console.log("test, validate");
     return await this.mixins.middleware.validateBody(ctx, next);
   }
 
@@ -190,6 +191,7 @@ export class SyController extends EventEmitter {
    * @see SyCreateMixin#create
    */
   public async create(ctx: Router.RouterContext): Promise<void> {
+    console.log("test");
     return this.transactionManager.performTransaction(
       ctx,
       "create",

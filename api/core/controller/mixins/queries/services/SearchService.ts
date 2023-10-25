@@ -1,6 +1,5 @@
-import { FindOptions, Op } from 'sequelize';
-
-import { CustomWhere, QueryType } from '../types';
+import { FindOptions, Op } from "sequelize";
+import { CustomWhere, QueryType } from "../types";
 
 /**
  * Service class for adding search functionality to database queries.
@@ -14,15 +13,22 @@ export class SearchService {
    */
   public addSearch(findOptions: FindOptions, query: QueryType): void {
     if (query.search && query.searchColumns) {
-      const columnsToSearch = query.searchColumns.split(',');
+      const columnsToSearch = query.searchColumns.split(",");
+      const searchValues = query.search.split(",");
 
-      (findOptions.where as CustomWhere)[Op.or] = {
-        [Op.or]: columnsToSearch.map((column: string) => ({
-          [column]: {
-            [Op.like]: `%${query.search}%`,
-          },
-        })),
-      };
+      const orConditions = [];
+
+      for (let column of columnsToSearch) {
+        for (let value of searchValues) {
+          orConditions.push({
+            [column]: {
+              [Op.like]: `%${value}%`,
+            },
+          });
+        }
+      }
+
+      (findOptions.where as CustomWhere)[Op.or] = orConditions;
     }
   }
 }

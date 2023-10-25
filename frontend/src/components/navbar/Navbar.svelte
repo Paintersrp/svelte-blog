@@ -33,7 +33,7 @@
     $navbarVisible ? '' : '-translate-y-full'
   } ${$navbarVisible ? 'md:translate-y-0' : ''} z-10`}
 >
-  <nav class="container mx-auto flex justify-between items-center">
+  <nav class="w-full mx-auto flex justify-between items-center">
     <div class="flex items-center lg:space-x-6 md:space-x-4 sm:space-x-2 w-full">
       <NavbarTitle />
       <SearchBar />

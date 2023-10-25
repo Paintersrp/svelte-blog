@@ -1,11 +1,11 @@
-import Router from 'koa-router';
-import { Optional, Transaction } from 'sequelize';
+import Router from "koa-router";
+import { Optional, Transaction } from "sequelize";
 
-import { SyMixin } from '../SyMixin';
-import { HttpStatus } from '../../../lib';
-import { ControllerMixinOptions } from '../../types';
-import { ControllerMessages } from '../../../messages/services';
-import * as settings from '../../../../settings';
+import { SyMixin } from "../SyMixin";
+import { HttpStatus } from "../../../lib";
+import { ControllerMixinOptions } from "../../types";
+import { ControllerMessages } from "../../../messages/services";
+// import * as settings from "../../../../settings";
 
 /**
  * SyCreateMixin is a mixin class which extends the abstract SyMixin.
@@ -32,14 +32,20 @@ export class SyCreateMixin extends SyMixin {
    * @param {Transaction} transaction - The Sequelize transaction.
    */
   public async create(ctx: Router.RouterContext, transaction: Transaction) {
-    const payload = this.processPayload(ctx) as Optional<any, string> | undefined;
-    const item = await this.model.create(payload, { transaction, context: ctx.state.user } as any);
+    console.log("here!");
+    const payload = this.processPayload(ctx) as
+      | Optional<any, string>
+      | undefined;
+    const item = await this.model.create(payload, {
+      transaction,
+      context: ctx.state.user,
+    } as any);
 
     this.createResponse(
       ctx,
       HttpStatus.CREATED,
       item,
-      ControllerMessages.SUCCESS(this.getModelName(item), 'create')
+      ControllerMessages.SUCCESS(this.getModelName(item), "create")
     );
   }
 
@@ -49,15 +55,22 @@ export class SyCreateMixin extends SyMixin {
    * @param {Router.RouterContext} ctx - The context object from Koa.
    * @param {Transaction} transaction - The Sequelize transaction.
    */
-  public async bulkCreate(ctx: Router.RouterContext, transaction: Transaction, includes: any[]) {
+  public async bulkCreate(
+    ctx: Router.RouterContext,
+    transaction: Transaction,
+    includes: any[]
+  ) {
     const payload = this.processPayload(ctx, true) as Optional<any, string>[];
-    const batchSize = settings.CONTROLLERS.MAX_BULK_BATCH_SIZE;
+    const batchSize = 200;
     const batches = Math.ceil(payload.length / batchSize);
     let createdItems: any[] = [];
 
     for (let i = 0; i < batches; i++) {
       const batch = payload.slice(i * batchSize, (i + 1) * batchSize);
-      const batchItems = await this.model.bulkCreate(batch, { transaction, include: includes });
+      const batchItems = await this.model.bulkCreate(batch, {
+        transaction,
+        include: includes,
+      });
       createdItems = [...createdItems, ...batchItems];
     }
 
@@ -65,7 +78,10 @@ export class SyCreateMixin extends SyMixin {
       ctx,
       HttpStatus.CREATED,
       createdItems,
-      ControllerMessages.SUCCESS(this.getModelNamePlural(createdItems[0]), 'create')
+      ControllerMessages.SUCCESS(
+        this.getModelNamePlural(createdItems[0]),
+        "create"
+      )
     );
   }
 }

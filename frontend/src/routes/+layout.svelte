@@ -9,18 +9,20 @@
 
   export let data;
 
-  afterNavigate(() => {
-    disableScrollHandling();
-    setTimeout(() => {
-      scrollTo({ top: 0, behavior: 'instant' });
-    }, 300);
-  });
+  // afterNavigate(() => {
+  // disableScrollHandling();
+  // setTimeout(() => {
+  //   scrollTo({ top: 0, behavior: 'instant' });
+  // }, 400);
+  // });
+
+  $: pathname = data.url;
 </script>
 
 <Navbar />
 
 <main>
-  {#key data.url}
+  {#key pathname}
     <div
       in:fly={{ x: -100, duration: 400, delay: 400, easing: backOut }}
       out:fly={{ x: 100, duration: 400, easing: backIn }}
@@ -43,7 +45,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    background-color: var(--background);
+    background-color: hsl(82 80% 96% / 1);
     color: var(--textPrimary);
     scroll-behavior: smooth;
   }
@@ -58,7 +60,7 @@
   }
 
   main {
-    background-color: var(--background);
+    background-color: hsl(82 80% 96% / 1);
     color: var(--textPrimary);
     padding-top: 4rem;
   }

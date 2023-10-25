@@ -1,6 +1,6 @@
-import Koa from 'koa';
-import { SyRoutes } from '../../routes';
-import { ProfileController } from './controller';
+import Koa from "koa";
+import { SyRoutes } from "../../routes";
+import { ProfileController } from "./controller";
 
 /**
  * Extends the generic SyRoutes class to provide specific routing logic for handling user profiles within the application.
@@ -23,6 +23,6 @@ export class ProfileRoutes extends SyRoutes<ProfileController> {
    * @param {Koa} app - An instance of a Koa application.
    */
   constructor(app: Koa) {
-    super(new ProfileController(app.context.logger), 'profile', app, 'v0.1');
+    super(new ProfileController(app.context.logger), "profile", app, "v0.1");
   }
 }

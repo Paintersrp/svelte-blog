@@ -1,9 +1,9 @@
-import Koa from 'koa';
-import Router from 'koa-router';
+import Koa from "koa";
+import Router from "koa-router";
 
-import { Logger } from 'pino';
-import { SyController } from '../controller/SyController';
-import { StackedRouter } from './types';
+import { Logger } from "pino";
+import { SyController } from "../controller/SyController";
+import { StackedRouter } from "./types";
 
 /**
  * Provides a reusable generic class to define routes and endpoints for a specific subclass of SyController.
@@ -40,7 +40,12 @@ export class SyRoutes<T extends SyController> {
    * @param app - An instance of a Koa application.
    * @param version - Optional version of the API.
    */
-  constructor(controller: T, routeName: string, app: Koa, version?: string | number | 'v1') {
+  constructor(
+    controller: T,
+    routeName: string,
+    app: Koa,
+    version?: string | number | "v1"
+  ) {
     this.controller = controller;
     this.router = new Router() as StackedRouter;
     this.routeName = routeName;
@@ -66,7 +71,7 @@ export class SyRoutes<T extends SyController> {
       .delete(`/${routeName}/:id`, controller.delete)
       .get(`/${routeName}`, controller.all)
       // .get(`/${routeName}`, controller.cacheEndpoint, controller.all)
-      .get(`/meta/${routeName}`, controller.cacheEndpoint, controller.getMetadata)
+      .get(`/meta/${routeName}`, controller.getMetadata)
       .options(`/${routeName}`, controller.options);
   }
 

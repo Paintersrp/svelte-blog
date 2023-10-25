@@ -1,7 +1,4 @@
 <script lang="ts">
-  import { blur, fade, fly } from 'svelte/transition';
-  import { quintOut } from 'svelte/easing';
-
   import Hero from './Hero.svelte';
   import CategoryScroller from './CategoryScroller.svelte';
   import FullPosts from './FullPosts.svelte';
@@ -11,15 +8,16 @@
 
   export let data;
 
-  let categories = data.categories || [];
+  let categories: App.Category[] = data.categories || [];
   let posts: App.Post[] = data.posts || [];
   let totalPosts: number = data.totalPosts || 0;
   let totalPages: number = Math.round(data.totalPosts / 25);
 
   let search: string = '';
-  let currentCategory: string = '';
+  let currentCategories: string[] = ['All'];
   let page = 1;
   let isLoading = false;
+  let isResetting = false;
 
   const loadMorePosts = async () => {
     page += 1;
@@ -33,12 +31,31 @@
     const response = await fetch(
       `http://localhost:4000/posts?pageSize=25&page=${page}&includes=User,Comment,Tag,Category`
     );
-    const data = await response.json();
-    posts = [...posts, ...data.data.data];
+    const responseData = await response.json();
+    posts = [...posts, ...responseData.data.data];
 
     setTimeout(() => {
       isLoading = false;
     }, 750);
+  };
+
+  const loadFilteredPosts = async () => {
+    isLoading = true;
+
+    let url = `http://localhost:4000/posts?includes=User,Comment,Tag,Category`;
+
+    if (currentCategories.length > 0 && !currentCategories.includes('All')) {
+      const searchValues = currentCategories.join(',');
+      url += `&searchColumns=categoryId&search=${searchValues}`;
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 750));
+
+    const response = await fetch(url);
+    const data = await response.json();
+    posts = data.data.data;
+
+    isLoading = false;
   };
 
   onMount(() => {
@@ -47,8 +64,12 @@
     if (endOfPostsElement) {
       const observer = new IntersectionObserver(
         (entries) => {
-          if (entries[0].isIntersecting) {
-            loadMorePosts();
+          if (!isResetting) {
+            if (entries[0].isIntersecting) {
+              if (currentCategories.includes('All')) {
+                loadMorePosts();
+              }
+            }
           }
         },
         { threshold: 1 }
@@ -57,8 +78,21 @@
     }
   });
 
-  const handleCategorySelect = (event: { detail: string }) => {
-    currentCategory = event.detail;
+  const handleCategorySelect = async (event: { detail: string[] }) => {
+    scrollTo({ top: 200, behavior: 'smooth' });
+
+    if (event.detail.includes('All') || event.detail.length === 0) {
+      isResetting = true;
+      currentCategories = ['All'];
+      page = 0;
+      posts = [];
+      await loadMorePosts();
+      isResetting = false;
+    } else {
+      currentCategories = event.detail;
+      page = 1;
+      loadFilteredPosts();
+    }
   };
 
   const hidePost = (event: { detail: number }) => {
@@ -66,13 +100,18 @@
   };
 </script>
 
+<svelte:head>
+  <title>Home</title>
+  <meta name="description" content="Svelte Blog App - SRP" />
+</svelte:head>
+
 <Hero />
 <CategoryScroller {categories} on:categorySelect={handleCategorySelect} />
 <div id="container">
   <!-- Update Sidebar to have buttons for categories on larger displays, hidden on smaller -->
   <!-- <HomeSidebar bind:search bind:posts bind:totalPosts /> -->
   <main id="content">
-    <FullPosts bind:posts on:hidePost={hidePost} />
+    <FullPosts bind:posts {currentCategories} on:hidePost={hidePost} />
     {#if isLoading}
       <Loading />
     {/if}
@@ -90,5 +129,6 @@
   #content {
     width: 100%;
     max-width: 1000px;
+    min-height: 60vh;
   }
 </style>

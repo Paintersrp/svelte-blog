@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { fly } from 'svelte/transition';
-  import { quintOut } from 'svelte/easing';
+  import { backIn, backOut, quintIn, quintOut, sineIn, sineOut } from 'svelte/easing';
   import { theme } from '$stores/theme';
 
   onMount(() => {
@@ -45,24 +45,20 @@
   </button>
   {#if userMenuOpen}
     <div
-      transition:fly={{
-        duration: 500,
-        x: 250,
-        y: 0,
-        opacity: 0,
-        easing: quintOut
+      in:fly={{
+        duration: 400,
+        x: 100,
+        easing: backOut
+      }}
+      out:fly={{
+        duration: 400,
+        x: 100,
+        easing: backIn
       }}
       class="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded shadow-lg"
     >
       <a href="/login" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Login</a>
       <a href="/register" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Register</a>
-      <div class="border-t border-gray-300" />
-      <button
-        class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-200"
-        on:click={toggleTheme}
-      >
-        Toggle Theme
-      </button>
     </div>
   {/if}
 </div>

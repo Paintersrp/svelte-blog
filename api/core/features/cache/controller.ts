@@ -1,8 +1,8 @@
-import { Logger } from 'pino';
+import { Logger } from "pino";
 
-import { SyController } from '../../controller/SyController';
-import { CacheSchema } from './schema';
-import { Cache } from './model';
+import { SyController } from "../../controller/SyController";
+import { CacheSchema } from "./schema";
+import { Cache } from "./model";
 
 /**
  * @class CacheController

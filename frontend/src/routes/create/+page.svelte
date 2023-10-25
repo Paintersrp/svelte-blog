@@ -1,107 +1,143 @@
 <script lang="ts">
-  import Modal from './CreateModal.svelte';
-  import Sidebar from './CreateSidebar.svelte';
-  import Editor from '$comp/Editor.svelte';
-  import { onMount, createEventDispatcher } from 'svelte';
+  import { sineIn, sineOut } from 'svelte/easing';
+  import { fly } from 'svelte/transition';
 
-  const dispatch = createEventDispatcher();
+  import Editor from '$comp/Editor.svelte';
 
   let postTitle: string = '';
   let postContent: string = '';
-  let isMobile = false;
-  let showModal = false;
+  let postThumbnail: File | null = null;
+  let postCategory: string = '';
+  let postTags: string = '';
 
-  onMount(() => {
-    if (window.innerWidth <= 768) {
-      isMobile = true;
-    }
+  $: step = 1;
 
-    window.addEventListener('resize', () => {
-      isMobile = window.innerWidth <= 768;
-    });
-  });
+  function handleNextStep() {
+    step++;
+  }
+
+  function handlePrevStep() {
+    step--;
+  }
+
+  function handleFile(e: any) {
+    postThumbnail = e.target?.files[0];
+  }
 
   function handleSubmit() {
-    console.log({ title: postTitle, content: postContent });
-    if (postTitle && postContent) {
-      dispatch('submit', { title: postTitle, content: postContent });
-    } else {
-      alert('Title and Content are required.');
-    }
+    // Implement submit functionality
   }
 
   function handleSaveDraft() {
     // Implement save draft functionality
   }
-
-  const toggleModal = () => {
-    showModal = !showModal;
-  };
 </script>
 
-<div id="container">
-  <button class="fab" on:click={() => (showModal = true)}>
-    <i class="fas fa-solid fa-bars" />
-  </button>
-  <Sidebar bind:postTitle {isMobile} {handleSubmit} {handleSaveDraft} />
-  <main id="content">
-    <section>
+<div id="container" class="flex flex-col h-screen p-4 md:p-8">
+  {#if step === 1}
+    <main
+      id="content"
+      class="flex flex-col space-y-4 p-4 bg-gray-50 shadow-lg rounded-lg"
+      in:fly={{ x: -100, duration: 300, delay: 300, easing: sineOut }}
+      out:fly={{ x: 100, duration: 300, easing: sineIn }}
+    >
+      <h2 class="text-2xl font-bold text-gray-800">Compose Post</h2>
       <Editor bind:content={postContent} />
-    </section>
-  </main>
+      <button
+        class="mt-4 px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition flex items-center justify-center"
+        on:click={handleNextStep}
+      >
+        Next
+        <svg
+          fill="currentColor"
+          xmlns="http://www.w3.org/2000/svg"
+          height="24"
+          viewBox="0 -960 960 960"
+          width="24"><path d="M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z" /></svg
+        >
+      </button>
+    </main>
+  {:else if step === 2}
+    <main
+      id="publish"
+      class="flex flex-col space-y-4 p-4 bg-gray-50 shadow-lg rounded-lg"
+      in:fly={{ x: -100, duration: 300, delay: 300, easing: sineOut }}
+      out:fly={{ x: 100, duration: 300, easing: sineIn }}
+    >
+      <h2 class="text-2xl font-bold text-gray-800">Publish</h2>
+      <div class="flex flex-col mb-6">
+        <label class="mb-2 text-gray-700" for="title">Title</label>
+        <input
+          type="text"
+          id="title"
+          placeholder="Title"
+          bind:value={postTitle}
+          class="p-2 border rounded"
+        />
+      </div>
+      <div class="flex flex-col mb-6">
+        <label class="mb-2 text-gray-700" for="thumbnail">Thumbnail</label>
+        <input
+          type="file"
+          id="thumbnail"
+          accept="image/*"
+          on:change={handleFile}
+          class="p-2 border rounded"
+        />
+      </div>
+      <div class="flex flex-col mb-6">
+        <label class="mb-2 text-gray-700" for="category">Category</label>
+        <input
+          type="text"
+          id="category"
+          placeholder="Category"
+          bind:value={postCategory}
+          class="p-2 border rounded"
+        />
+      </div>
+      <div class="flex flex-col mb-6">
+        <label class="mb-2 text-gray-700" for="tags">Tags (comma-separated)</label>
+        <input
+          type="text"
+          id="tags"
+          placeholder="Tags"
+          bind:value={postTags}
+          class="p-2 border rounded"
+        />
+      </div>
+      <div class="flex space-x-4">
+        <button
+          class="px-6 py-2 bg-gray-500 text-white rounded hover:bg-gray-700 transition flex items-center justify-center"
+          on:click={handlePrevStep}
+        >
+          <svg
+            fill="currentColor"
+            xmlns="http://www.w3.org/2000/svg"
+            height="24"
+            viewBox="0 -960 960 960"
+            width="24"><path d="M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z" /></svg
+          >
+          Back
+        </button>
+        <button
+          class="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition"
+          on:click={handleSubmit}
+        >
+          Publish
+        </button>
+      </div>
+    </main>
+  {/if}
 </div>
-
-{#if showModal}
-  <Modal {handleSubmit} {handleSaveDraft} {postTitle} {toggleModal} />
-{/if}
 
 <style>
   #container {
     display: flex;
-    background-color: var(--background);
-    color: var(--textPrimary);
+    flex-direction: column;
     height: 100vh;
   }
 
   #content {
-    padding: var(--spacingMedium);
     width: 100%;
-  }
-
-  section {
-    margin-bottom: var(--spacingLarge);
-  }
-
-  .fab {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background-color: var(--primaryColor);
-    color: #fff;
-    font-size: 21px;
-    display: none;
-    justify-content: center;
-    align-items: center;
-    border: none;
-    cursor: pointer;
-  }
-
-  .fab:focus {
-    outline: none;
-  }
-
-  @media (max-width: 768px) {
-    .fab {
-      display: flex;
-    }
-  }
-
-  @media (max-width: 768px) {
-    #container {
-      flex-direction: column;
-    }
   }
 </style>

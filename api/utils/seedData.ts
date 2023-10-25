@@ -7,7 +7,7 @@ import { User } from "../core/features/user";
 
 export async function seedData() {
   try {
-    User.seedUser(25);
+    User.seedUser(50);
 
     const categoryData = [
       "JavaScript",
@@ -34,7 +34,7 @@ export async function seedData() {
       "Machine Learning",
       "Web Dev",
     ].map((name) => ({ name }));
-    
+
     const tags = await Tag.bulkCreate(tagData);
     console.log("Tag seeding completed successfully.");
 
@@ -61,7 +61,7 @@ export async function seedData() {
 
     console.log("Tag association with posts completed successfully.");
 
-    const commentData = Array.from({ length: 200 }).map(() => ({
+    const commentData = Array.from({ length: 500 }).map(() => ({
       content: faker.lorem.sentence(),
       authorId: Math.floor(Math.random() * 10) + 1,
       postId: posts[Math.floor(Math.random() * posts.length)].id,

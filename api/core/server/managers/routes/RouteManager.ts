@@ -46,8 +46,8 @@ export class RouteManager {
     lifecycleManager: LifecycleManager,
     routes?: RouteConstructor[]
   ) {
-    this.initializeRoutes(app, routes);
     this.initializeModelRoutes(app);
+    this.initializeRoutes(app, routes);
     this.initializeManagementRoutes(app, router, lifecycleManager);
   }
 
@@ -203,8 +203,6 @@ export class RouteManager {
     app.context.logger.warn(
       `Schema file not found for ${modelFile}. Generating a basic schema.`
     );
-
-    console.log(modelFile);
 
     try {
       const modelModule = await import(`../../../../${modelFile}`);
