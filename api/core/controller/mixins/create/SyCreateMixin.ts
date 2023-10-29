@@ -32,19 +32,27 @@ export class SyCreateMixin extends SyMixin {
    * @param {Transaction} transaction - The Sequelize transaction.
    */
   public async create(ctx: Router.RouterContext, transaction: Transaction) {
-    console.log("here!");
     const payload = this.processPayload(ctx) as
       | Optional<any, string>
       | undefined;
+
+    const findOptions = await this.processQueryParams(ctx);
+
     const item = await this.model.create(payload, {
       transaction,
       context: ctx.state.user,
     } as any);
 
+    const itemWithQuery = await this.findItemById(
+      item.id,
+      findOptions,
+      transaction
+    );
+
     this.createResponse(
       ctx,
       HttpStatus.CREATED,
-      item,
+      itemWithQuery,
       ControllerMessages.SUCCESS(this.getModelName(item), "create")
     );
   }

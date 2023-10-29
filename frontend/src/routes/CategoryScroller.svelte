@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  import { navbarVisible } from '$stores/navbar';
+  import { navbarVisible } from '$lib/stores/navbar';
 
   export let categories: App.Category[];
 

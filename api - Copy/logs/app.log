@@ -1,0 +1,24 @@
+{"level":30,"time":"2023-10-25T03:29:41.118Z","pid":15980,"hostname":"DESKTOP-9MND26K","name":"app","msg":"Database connection successful"}
+{"level":30,"time":"2023-10-25T03:29:41.236Z","pid":15980,"hostname":"DESKTOP-9MND26K","name":"app","msg":"Existing database used."}
+{"level":30,"time":"2023-10-25T03:29:41.237Z","pid":15980,"hostname":"DESKTOP-9MND26K","name":"app","msg":"Cache Initiated"}
+{"level":30,"time":"2023-10-25T03:29:41.249Z","pid":15980,"hostname":"DESKTOP-9MND26K","name":"app","msg":"Server running on http://localhost:4000"}
+{"level":30,"time":"2023-10-25T03:33:15.204Z","pid":18888,"hostname":"DESKTOP-9MND26K","name":"app","msg":"Database connection successful"}
+{"level":30,"time":"2023-10-25T03:33:15.318Z","pid":18888,"hostname":"DESKTOP-9MND26K","name":"app","msg":"Existing database used."}
+{"level":30,"time":"2023-10-25T03:33:15.319Z","pid":18888,"hostname":"DESKTOP-9MND26K","name":"app","msg":"Cache Initiated"}
+{"level":30,"time":"2023-10-25T03:33:15.332Z","pid":18888,"hostname":"DESKTOP-9MND26K","name":"app","msg":"Server running on http://localhost:4000"}
+{"level":30,"time":"2023-10-25T03:33:20.694Z","pid":17696,"hostname":"DESKTOP-9MND26K","name":"app","msg":"Database connection successful"}
+{"level":30,"time":"2023-10-25T03:33:21.080Z","pid":17696,"hostname":"DESKTOP-9MND26K","name":"app","msg":"Existing database used."}
+{"level":30,"time":"2023-10-25T03:33:21.080Z","pid":17696,"hostname":"DESKTOP-9MND26K","name":"app","msg":"Cache Initiated"}
+{"level":30,"time":"2023-10-25T03:33:21.123Z","pid":17696,"hostname":"DESKTOP-9MND26K","name":"app","msg":"Server running on http://localhost:4000"}
+{"level":30,"time":"2023-10-25T03:36:55.586Z","pid":8780,"hostname":"DESKTOP-9MND26K","name":"app","msg":"Database connection successful"}
+{"level":30,"time":"2023-10-25T03:36:55.969Z","pid":8780,"hostname":"DESKTOP-9MND26K","name":"app","msg":"Existing database used."}
+{"level":30,"time":"2023-10-25T03:36:55.969Z","pid":8780,"hostname":"DESKTOP-9MND26K","name":"app","msg":"Cache Initiated"}
+{"level":30,"time":"2023-10-25T03:36:56.011Z","pid":8780,"hostname":"DESKTOP-9MND26K","name":"app","msg":"Server running on http://localhost:4000"}
+{"level":30,"time":"2023-10-25T03:37:00.163Z","pid":12172,"hostname":"DESKTOP-9MND26K","name":"app","msg":"Database connection successful"}
+{"level":30,"time":"2023-10-25T03:37:00.537Z","pid":12172,"hostname":"DESKTOP-9MND26K","name":"app","msg":"Existing database used."}
+{"level":30,"time":"2023-10-25T03:37:00.538Z","pid":12172,"hostname":"DESKTOP-9MND26K","name":"app","msg":"Cache Initiated"}
+{"level":30,"time":"2023-10-25T03:37:00.597Z","pid":12172,"hostname":"DESKTOP-9MND26K","name":"app","msg":"Server running on http://localhost:4000"}
+{"level":30,"time":"2023-10-25T03:37:20.649Z","pid":18892,"hostname":"DESKTOP-9MND26K","name":"app","msg":"Database connection successful"}
+{"level":30,"time":"2023-10-25T03:37:21.137Z","pid":18892,"hostname":"DESKTOP-9MND26K","name":"app","msg":"Existing database used."}
+{"level":30,"time":"2023-10-25T03:37:21.138Z","pid":18892,"hostname":"DESKTOP-9MND26K","name":"app","msg":"Cache Initiated"}
+{"level":30,"time":"2023-10-25T03:37:21.178Z","pid":18892,"hostname":"DESKTOP-9MND26K","name":"app","msg":"Server running on http://localhost:4000"}

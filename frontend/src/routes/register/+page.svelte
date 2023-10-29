@@ -1,7 +1,7 @@
 <script lang="ts">
-  export let form;
-
-  console.log(form);
+  import { applyAction, enhance } from '$app/forms';
+  import { goto } from '$app/navigation';
+  import { toastStore } from '$lib/stores/toast';
 </script>
 
 <section class="flex flex-grow items-center justify-center p-8">
@@ -13,17 +13,38 @@
     </div>
     <div class="md:w-1/2 p-4">
       <h2 class="text-3xl font-bold mb-6 text-white text-center">Register</h2>
-      <form method="POST" action="?/register" class="space-y-6">
+      <form
+        method="POST"
+        action="?/register"
+        class="space-y-6"
+        use:enhance={() => {
+          return async ({ result }) => {
+            if (result.type === 'redirect') {
+              goto(result.location).then(() =>
+                setTimeout(
+                  () =>
+                    toastStore.addToast('Registration Successful!', 'success', 'top-right', 5000),
+                  400
+                )
+              );
+            } else {
+              await applyAction(result);
+            }
+          };
+        }}
+      >
         <div class="relative">
           <input
-            id="email"
-            name="email"
-            type="email"
+            id="username"
+            name="username"
+            type="username"
             placeholder=" "
             class="block w-full p-2 border bg-gray-100 text-gray-800 mt-3"
             required
           />
-          <label for="email" class="absolute top-0 left-0 mt-2.5 ml-3 text-gray-700">Email</label>
+          <label for="username" class="absolute top-0 left-0 mt-2.5 ml-3 text-gray-700"
+            >Username</label
+          >
         </div>
         <div class="relative">
           <input

@@ -46,7 +46,6 @@ export class RouteManager {
     lifecycleManager: LifecycleManager,
     routes?: RouteConstructor[]
   ) {
-    this.initializeModelRoutes(app);
     this.initializeRoutes(app, routes);
     this.initializeManagementRoutes(app, router, lifecycleManager);
   }
@@ -57,7 +56,7 @@ export class RouteManager {
    * @param {RouteConstructor[]} [routes] - Optional external routes to register.
    * @public
    */
-  public initializeRoutes(app: Koa, routes?: RouteConstructor[]) {
+  public async initializeRoutes(app: Koa, routes?: RouteConstructor[]) {
     if (routes) {
       const appRoutes = [...this.internalRoutes, ...routes];
 
@@ -71,22 +70,32 @@ export class RouteManager {
     }
   }
 
-  /**
-   * Initializes and registers CRUD/Query routes for Sequelize models automatically.
-   * @param {Koa} app - The Koa application instance.
-   */
-  public async initializeModelRoutes(app: Koa) {
+  public async initializeModelRoutes() {
     const modelFiles = await this.findModelFiles("./models");
 
-    for (const modelFile of modelFiles) {
-      const schemaFile = path.join(path.dirname(modelFile), "schema.ts");
+    console.log(modelFiles);
+    const foundRoutes = [];
 
-      if (fs.existsSync(schemaFile)) {
-        this.setupModelAndSchema(app, modelFile, schemaFile);
-      } else {
-        this.setupModelAndGeneratedSchema(app, modelFile);
+    for (const modelFile of modelFiles) {
+      const routesFile = path.join(path.dirname(modelFile), "routes.ts");
+
+      const routesModule = await import(`../../../../${routesFile}`).then(
+        (module: any) => module.default
+      );
+
+      const areRoutesRegistered = Reflect.getMetadata(
+        "registered",
+        routesModule
+      );
+
+      if (areRoutesRegistered) {
+        foundRoutes.push(routesModule);
       }
     }
+
+    console.log(foundRoutes);
+
+    return foundRoutes;
   }
 
   /**
@@ -147,8 +156,6 @@ export class RouteManager {
   private async findModelFiles(dir: string): Promise<string[]> {
     const results: string[] = [];
     const list = await fs.promises.readdir(dir);
-
-    console.log("LIST", list, "LIST");
 
     for (const file of list) {
       const fullPath = path.join(dir, file);
@@ -241,14 +248,12 @@ export class RouteManager {
       return;
     }
 
-    model.sync();
-
     const controller = new SyController({
       model,
       schema,
       logger: app.context.logger,
     });
-    const route = new SyRoutes(controller, model.tableName, app, "v1");
+    const route = new SyRoutes(controller, model.tableName, app, "v0.1");
 
     if (!controller || !route) {
       app.context.logger.error("Controller or route could not be initialized.");
@@ -298,3 +303,99 @@ export class RouteManager {
     return Yup.object().shape(schemaDefinition);
   }
 }
+
+// Model based generation version
+
+// /**
+//  * Initializes and registers CRUD/Query routes for Sequelize models automatically.
+//  * @param {Koa} app - The Koa application instance.
+//  */
+// public async initializeModelRoutes(app: Koa) {
+//   const modelFiles = await this.findModelFiles("./models");
+
+//   for (const modelFile of modelFiles) {
+//     const schemaFile = path.join(path.dirname(modelFile), "schema.ts");
+
+//     if (fs.existsSync(schemaFile)) {
+//       this.setupModelAndSchema(app, modelFile, schemaFile);
+//     } else {
+//       this.setupModelAndGeneratedSchema(app, modelFile);
+//     }
+//   }
+// }
+
+// /**
+//    * Recursively finds model files in the specified directory.
+//    * @param {string} dir - The directory to search for model files.
+//    * @returns {Promise<string[]>} An array of model file paths.
+//    * @private
+//    */
+// private async findModelFiles(dir: string): Promise<string[]> {
+//   const results: string[] = [];
+//   const list = await fs.promises.readdir(dir);
+
+//   for (const file of list) {
+//     const fullPath = path.join(dir, file);
+//     const stat = await fs.promises.stat(fullPath);
+
+//     if (stat.isDirectory()) {
+//       const subResults = await this.findModelFiles(fullPath);
+//       results.push(...subResults);
+//     } else if (file === "model.ts") {
+//       results.push(fullPath);
+//     }
+//   }
+
+//   return results;
+// }
+
+// /**
+//  * Prepares and initializes a Sequelize model with a schema.
+//  * @param {Koa} app - The Koa application instance.
+//  * @param {string} modelFile - The path to the model file.
+//  * @param {string} schemaFile - The path to the schema file.
+//  */
+// private async setupModelAndSchema(
+//   app: Koa,
+//   modelFile: string,
+//   schemaFile: string
+// ) {
+//   try {
+//     const [modelModule, schemaModule] = await Promise.all([
+//       import(`../../../../${modelFile}`),
+//       import(`../../../../${schemaFile}`),
+//     ]);
+
+//     const model = modelModule.default as ModelStatic<any>;
+//     const schema = schemaModule.default;
+
+//     this.initializeModel(app, model, schema, modelFile);
+//   } catch (error) {
+//     app.context.logger.error(
+//       `Error loading model or schema from ${modelFile}:`,
+//       error
+//     );
+//     throw error;
+//   }
+// }
+// /**
+//  * Prepares and initializes a Sequelize model with a generated schema.
+//  * @param {Koa} app - The Koa application instance.
+//  * @param {string} modelFile - The path to the model file.
+//  */
+// private async setupModelAndGeneratedSchema(app: Koa, modelFile: string) {
+//   app.context.logger.warn(
+//     `Schema file not found for ${modelFile}. Generating a basic schema.`
+//   );
+
+//   try {
+//     const modelModule = await import(`../../../../${modelFile}`);
+//     const model = modelModule.default as ModelStatic<any>;
+//     const schema = this.generateSchemaFromModel(model);
+
+//     this.initializeModel(app, model, schema, modelFile);
+//   } catch (error) {
+//     app.context.logger.error(`Error loading model from ${modelFile}:`, error);
+//     throw error;
+//   }
+// }

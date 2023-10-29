@@ -1,7 +1,14 @@
 declare global {
   namespace App {
     // interface Error {}
-    // interface Locals {}
+    interface Locals {
+      user: {
+        id: number;
+        username: string;
+      };
+
+      logout: boolean;
+    }
     // interface PageData {}
     // interface Platform {}
 
@@ -19,6 +26,8 @@ declare global {
       id: number;
       name: string;
     }
+
+    // on:mouseenter={() => durationProgress.pause()}
 
     interface Category {
       id: number | string;
@@ -42,6 +51,43 @@ declare global {
       Comments: Comment[];
       Tags: Tag[];
     }
+  }
+
+  /*
+   * Auth Section
+   */
+  type AuthContent = {
+    id: number;
+    accessToken: string;
+    refreshToken: string;
+  };
+
+  type AuthResponse = {
+    data: AuthContent;
+  };
+
+  type LoginDTO = { username: string; password: string };
+
+  type SaltResponse = { data: { salt?: string } };
+
+  /*
+   * Toast Section
+   */
+  type ToastType = 'info' | 'success' | 'warning' | 'error';
+  type ToastPosition =
+    | 'top-left'
+    | 'top-center'
+    | 'top-right'
+    | 'bottom-left'
+    | 'bottom-center'
+    | 'bottom-right';
+
+  interface Toast {
+    id: number;
+    message: string;
+    type: ToastType;
+    position: ToastPosition;
+    duration: number;
   }
 
   interface ViewTransition {

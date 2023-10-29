@@ -50,7 +50,7 @@ export class SyReadMixin extends SyMixin {
   // {#if post.Comments.length === 1} comment {:else} comments {/if}
 
   private sanitizeData(data: any): any {
-    const sensitiveFields = ["password", "salt", "refreshToken"];
+    const sensitiveFields = ["yeet"];
 
     if (Array.isArray(data)) {
       return data.map((item) => this.sanitizeData(item));

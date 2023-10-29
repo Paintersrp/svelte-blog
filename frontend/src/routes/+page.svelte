@@ -26,7 +26,7 @@
 
     isLoading = true;
 
-    await new Promise((resolve) => setTimeout(resolve, 750));
+    // await new Promise((resolve) => setTimeout(resolve, 250));
 
     const response = await fetch(
       `http://localhost:4000/posts?pageSize=25&page=${page}&includes=User,Comment,Tag,Category`
@@ -34,9 +34,9 @@
     const responseData = await response.json();
     posts = [...posts, ...responseData.data.data];
 
-    setTimeout(() => {
-      isLoading = false;
-    }, 750);
+    // setTimeout(() => {
+    isLoading = false;
+    // }, 750);
   };
 
   const loadFilteredPosts = async () => {
@@ -49,7 +49,7 @@
       url += `&searchColumns=categoryId&search=${searchValues}`;
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 750));
+    // await new Promise((resolve) => setTimeout(resolve, 250));
 
     const response = await fetch(url);
     const data = await response.json();

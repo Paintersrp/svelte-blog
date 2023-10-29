@@ -10,14 +10,13 @@ import {
 } from "sequelize";
 
 import { SyModel } from "../../core/models/SyModel";
-import { Field, Register } from "../../core/lib";
+import { Field } from "../../core/lib";
 import { ORM } from "../../settings";
 import { User } from "../../core/features/user";
 import Category from "../category/model";
 import Tag from "../tag/model";
 import Comment from "../comment/model";
 
-@Register
 export default class Post extends SyModel<
   InferAttributes<Post>,
   InferCreationAttributes<Post>

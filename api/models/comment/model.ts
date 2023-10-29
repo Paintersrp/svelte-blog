@@ -1,11 +1,10 @@
 import { DataTypes, InferAttributes, InferCreationAttributes } from "sequelize";
 
 import { SyModel } from "../../core/models/SyModel";
-import { Field, Register } from "../../core/lib";
+import { Field } from "../../core/lib";
 import { ORM } from "../../settings";
 import { User } from "../../core/features/user";
 
-@Register
 export default class Comment extends SyModel<
   InferAttributes<Comment>,
   InferCreationAttributes<Comment>

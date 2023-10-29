@@ -1,6 +1,6 @@
-import Koa from 'koa';
-import { UserController } from './controller';
-import { SyRoutes } from '../../routes/SyRoutes';
+import Koa from "koa";
+import { UserController } from "./controller";
+import { SyRoutes } from "../../routes/SyRoutes";
 
 /**
  * Extends the generic SyRoutes class to provide specific routing logic for handling users within the application.
@@ -24,12 +24,17 @@ export class UserRoutes extends SyRoutes<UserController> {
    * @param {Koa} app - An instance of a Koa application.
    */
   constructor(app: Koa) {
-    super(new UserController(app.context.logger), 'users', app, 'v0.1');
+    super(new UserController(app.context.logger), "users", app, "v0.1");
 
-    this.router.post(`/register`, this.controller.validateUserBody, this.controller.register);
+    this.router.post(
+      `/register`,
+      this.controller.validateUserBody,
+      this.controller.register
+    );
     this.router.post(`/login`, this.controller.login);
     this.router.get(`/logout`, this.controller.logout);
     this.router.post(`/refresh-token`, this.controller.refresh_token);
+    this.router.post(`/salt`, this.controller.salt);
 
     this.addRoutesToApp(app);
   }

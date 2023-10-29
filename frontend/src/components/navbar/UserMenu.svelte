@@ -1,8 +1,10 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { fly } from 'svelte/transition';
-  import { backIn, backOut, quintIn, quintOut, sineIn, sineOut } from 'svelte/easing';
-  import { theme } from '$stores/theme';
+  import { backIn, backOut } from 'svelte/easing';
+  import { page } from '$app/stores';
+  import { userMenuVisible } from '$lib/stores/usermenu';
+  import { navbarVisible } from '$lib/stores/navbar';
 
   onMount(() => {
     if (typeof window !== 'undefined') {
@@ -13,23 +15,23 @@
     }
   });
 
-  let userMenuOpen = false;
-
   function handleWindowClick(event: any) {
     if (!event.target.closest('.user-menu')) {
-      userMenuOpen = false;
+      userMenuVisible.set(false);
     }
   }
 
-  const toggleTheme = () => {
-    theme.toggleTheme();
-  };
+  function handleClick() {
+    userMenuVisible.set(!$userMenuVisible);
+  }
+
+  $: marginTop = $navbarVisible ? 'mt-2' : 'mt-6';
 </script>
 
 <div class="relative user-menu z-0">
   <button
     class="p-1.5 rounded-full bg-lime-900 border-lime-900 hover:bg-lime-300 transition ease-in-out duration-150 text-lime-300 hover:text-lime-900"
-    on:click={() => (userMenuOpen = !userMenuOpen)}
+    on:click={handleClick}
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -43,7 +45,7 @@
       /></svg
     >
   </button>
-  {#if userMenuOpen}
+  {#if $userMenuVisible}
     <div
       in:fly={{
         duration: 400,
@@ -55,10 +57,71 @@
         x: 100,
         easing: backIn
       }}
-      class="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded shadow-lg"
+      class="absolute right-0 {marginTop} w-48 bg-white border border-gray-300 rounded-lg shadow-lg py-0 transition transform origin-top-right duration-400 ease-out"
     >
-      <a href="/login" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Login</a>
-      <a href="/register" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Register</a>
+      {#if !$page.data.user}
+        <a
+          href="/login"
+          on:click={handleClick}
+          class="block px-4 py-2 text-gray-700 hover:bg-lime-200 rounded-t-lg">Login</a
+        >
+        <a
+          href="/register"
+          on:click={handleClick}
+          class="block px-4 py-2 text-gray-700 hover:bg-lime-200 rounded-b-lg">Register</a
+        >
+      {/if}
+
+      {#if $page.data.user}
+        <a
+          href="/"
+          on:click={handleClick}
+          class="block px-4 py-2 text-gray-700 hover:bg-lime-200 rounded-t-lg">Admin</a
+        >
+        <a
+          href={`/?logout=true`}
+          on:click={handleClick}
+          class="block px-4 py-2 text-gray-700 hover:bg-lime-200">Logout</a
+        >
+
+        <div
+          class="flex justify-between items-center px-4 py-2 border-t border-gray-200 text-gray-700 hover:bg-lime-200 rounded-b-lg"
+        >
+          <div class="text-gray-700">Dark Mode</div>
+          <input type="checkbox" class="toggle toggle-sm" />
+        </div>
+      {/if}
     </div>
   {/if}
 </div>
+
+<style>
+  .toggle {
+    appearance: none;
+    outline: none;
+    width: 2rem;
+    height: 1rem;
+    border-radius: 1rem;
+    position: relative;
+    cursor: pointer;
+    background-color: #ccc;
+    transition: background-color 0.2s;
+  }
+  .toggle::before {
+    content: '';
+    position: absolute;
+    top: 1.75px;
+    left: 0.125rem;
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 0.75rem;
+    background-color: white;
+    transition: transform 0.2s;
+  }
+  .toggle:checked {
+    background-color: #6aa22b;
+  }
+  .toggle:checked::before {
+    transform: translateX(0.95rem);
+  }
+</style>

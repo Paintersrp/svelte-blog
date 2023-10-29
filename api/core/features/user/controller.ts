@@ -1,16 +1,17 @@
-import Router from 'koa-router';
+import Router from "koa-router";
 
-import { Logger } from 'pino';
-import { InferCreationAttributes } from 'sequelize';
-import { SyController } from '../../controller/SyController';
+import { Logger } from "pino";
+import { InferCreationAttributes } from "sequelize";
+import { SyController } from "../../controller/SyController";
 
-import { AuthMessages } from '../../messages/services';
+import { AuthMessages } from "../../messages/services";
 
-import { JWTAuthService } from '../../auth/jwt';
-import { UserService } from '../../auth/user';
+import { JWTAuthService } from "../../auth/jwt";
+import { UserService } from "../../auth/user";
 
-import { User } from './model';
-import { UserSchema } from './schema';
+import { User } from "./model";
+import { UserSchema } from "./schema";
+import { HttpStatus } from "../../lib";
 
 /**
  * @class UserController
@@ -29,7 +30,14 @@ import { UserSchema } from './schema';
  * @extends {SyController}
  */
 export class UserController extends SyController {
-  private methodsToBind = ['register', 'login', 'logout', 'refresh_token', 'validateUserBody'];
+  private methodsToBind = [
+    "register",
+    "login",
+    "logout",
+    "refresh_token",
+    "salt",
+    "validateUserBody",
+  ];
 
   /**
    * @desc Constructs a new instance of the UserController class, initializes it with the
@@ -55,13 +63,16 @@ export class UserController extends SyController {
   async validateUserBody(ctx: Router.RouterContext, next: () => Promise<any>) {
     const fields = ctx.request.body as InferCreationAttributes<User>;
 
+    console.log(fields);
+
     if (fields) {
       try {
         await this.validate(fields);
         await next();
       } catch (error) {
+        console.log(error);
         ctx.status = 400;
-        ctx.body = { message: 'Invalid request body', error: error };
+        ctx.body = { message: "Invalid request body", error: error };
       }
     }
   }
@@ -76,13 +87,19 @@ export class UserController extends SyController {
   async register(ctx: Router.RouterContext): Promise<void> {
     const fields = ctx.request.body as InferCreationAttributes<User>;
 
+    console.log(fields);
+
     if (fields) {
       try {
         await User.create(fields);
-        ctx.body = AuthMessages.SUCCESS('User', 'registration');
+        ctx.body = AuthMessages.SUCCESS("User", "registration");
+        ctx.status = 200;
       } catch (error) {
         ctx.status = 500;
-        ctx.body = { message: AuthMessages.FAIL('User', 'registration'), error: error };
+        ctx.body = {
+          message: AuthMessages.FAIL("User", "registration"),
+          error: error,
+        };
       }
     }
   }
@@ -98,6 +115,7 @@ export class UserController extends SyController {
     const { username, password } = ctx.request.body as {
       [key: string]: string;
     };
+
     const hasToken = await JWTAuthService.checkForToken(ctx);
 
     if (hasToken) {
@@ -113,17 +131,31 @@ export class UserController extends SyController {
         ctx.throw(401, AuthMessages.USER_NOT_FOUND(username));
       }
 
-      const isValidPassword = await UserService.comparePassword(password, user.password);
+      console.log(password, user.password);
+
+      // Request password is hashed and salt checked on the FE before delivery
+      const isValidPassword = password === user.password;
 
       if (!isValidPassword) {
-        ctx.throw(401, AuthMessages.INVALID_PASSWORD);
+        const isUnhashedPassword = await UserService.comparePassword(
+          password,
+          user.password
+        );
+
+        if (!isUnhashedPassword) {
+          ctx.throw(401, AuthMessages.INVALID_PASSWORD);
+        }
       }
 
       if (user.refreshToken) {
-        const isBlacklisted = await JWTAuthService.isBlacklisted(user.refreshToken);
+        const isBlacklisted = await JWTAuthService.isBlacklisted(
+          user.refreshToken
+        );
 
         if (!isBlacklisted) {
-          const decodedOriginalRefresh = JWTAuthService.decode(user.refreshToken);
+          const decodedOriginalRefresh = JWTAuthService.decode(
+            user.refreshToken
+          );
           if (decodedOriginalRefresh) {
             await JWTAuthService.addToBlacklist(user.refreshToken);
           }
@@ -132,19 +164,24 @@ export class UserController extends SyController {
 
       const userDTO = { id: user.id, username: user.username, role: user.role };
       const accessToken = await JWTAuthService.sign(userDTO);
-      const refreshToken = await JWTAuthService.signRefresh({ username: user.username });
+      const refreshToken = await JWTAuthService.signRefresh({
+        username: user.username,
+      });
 
       await JWTAuthService.setCookies(ctx, accessToken, refreshToken);
 
       user.refreshToken = refreshToken;
       await user.save();
 
-      ctx.body = { accessToken, refreshToken };
+      ctx.body = { id: user.id, accessToken, refreshToken };
+      ctx.status = 200;
     } catch (error: any) {
-      console.log(error);
       this.logger.error(error);
       ctx.status = 500;
-      ctx.body = { message: AuthMessages.FAIL('User', 'login'), error: error.message };
+      ctx.body = {
+        message: AuthMessages.FAIL("User", "login"),
+        error: error.message,
+      };
     }
   }
 
@@ -157,7 +194,7 @@ export class UserController extends SyController {
    */
   async refresh_token(ctx: Router.RouterContext) {
     const { refreshToken } = ctx.request.body as { [key: string]: string };
-    const originalAccessToken = ctx.cookies.get('jwt');
+    const originalAccessToken = ctx.cookies.get("jwt");
 
     if (originalAccessToken) {
       try {
@@ -172,6 +209,7 @@ export class UserController extends SyController {
             await JWTAuthService.addToBlacklist(originalAccessToken);
 
             ctx.body = { accessToken };
+            ctx.status = 200;
           } else {
             ctx.status = 401;
             ctx.body = AuthMessages.TOKEN_EXPIRED;
@@ -192,8 +230,8 @@ export class UserController extends SyController {
    * @param {Router.RouterContext} ctx - The context of the request.
    */
   async logout(ctx: Router.RouterContext) {
-    const accessToken = ctx.cookies.get('jwt');
-    const refreshToken = ctx.cookies.get('refreshToken');
+    const accessToken = ctx.cookies.get("jwt");
+    const refreshToken = ctx.cookies.get("refreshToken");
 
     if (accessToken) {
       await JWTAuthService.addToBlacklist(accessToken);
@@ -205,10 +243,50 @@ export class UserController extends SyController {
 
     try {
       JWTAuthService.clearCookies(ctx);
-      ctx.body = AuthMessages.SUCCESS('User', 'logout');
+      ctx.body = AuthMessages.SUCCESS("User", "logout");
+      ctx.status = 200;
     } catch (erorr) {
       ctx.status = 500;
-      ctx.body = AuthMessages.FAIL('User', 'logout');
+      ctx.body = AuthMessages.FAIL("User", "logout");
+    }
+  }
+
+  /**
+   * @async
+   * @method logout
+   * @desc Handles the user logout request. Clears cookies and blacklists tokens.
+   *
+   * @param {Router.RouterContext} ctx - The context of the request.
+   */
+  async salt(ctx: Router.RouterContext) {
+    const { username } = ctx.request.body as {
+      [key: string]: string;
+    };
+
+    const hasToken = await JWTAuthService.checkForToken(ctx);
+
+    if (hasToken) {
+      ctx.status = 403;
+      ctx.body = { message: AuthMessages.ALREADY_LOGGED_IN };
+      return;
+    }
+
+    try {
+      const user = await UserService.getByUsername(username);
+
+      if (user) {
+        ctx.body = { salt: user.salt };
+        ctx.status = 200;
+      } else {
+        ctx.body = { message: AuthMessages.USER_NOT_FOUND(username) };
+      }
+    } catch (error: any) {
+      this.logger.error(error);
+      ctx.status = 500;
+      ctx.body = {
+        message: AuthMessages.FAIL("User", "salt"),
+        error: error.message,
+      };
     }
   }
 }

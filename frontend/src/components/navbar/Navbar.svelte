@@ -1,10 +1,11 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+
   import UserMenu from './UserMenu.svelte';
   import WriteButton from './WriteButton.svelte';
   import SearchBar from './SearchBar.svelte';
   import NavbarTitle from './NavbarTitle.svelte';
-  import { navbarVisible } from '$stores/navbar';
+  import { navbarVisible } from '$lib/stores/navbar';
 
   let lastScrollTop = 0;
 

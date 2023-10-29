@@ -63,11 +63,14 @@ export class SyRoutes<T extends SyController> {
     const { controller, router, routeName } = this;
 
     router
-      .post(`/${routeName}`, controller.validateBody, controller.create)
+      // .post(`/${routeName}`, controller.validateBody, controller.create)
+      .post(`/${routeName}`, controller.create)
       .get(`/${routeName}/:id`, controller.read)
       // .get(`/${routeName}/:id`, controller.cacheEndpoint, controller.read)
-      .put(`/${routeName}/:id`, controller.validateBody, controller.update)
-      .patch(`/${routeName}/:id`, controller.validateBody, controller.update)
+      .put(`/${routeName}/:id`, controller.update)
+      // .put(`/${routeName}/:id`, controller.validateBody, controller.update)
+      .patch(`/${routeName}/:id`, controller.update)
+      // .patch(`/${routeName}/:id`, controller.validateBody, controller.update)
       .delete(`/${routeName}/:id`, controller.delete)
       .get(`/${routeName}`, controller.all)
       // .get(`/${routeName}`, controller.cacheEndpoint, controller.all)

@@ -1,10 +1,9 @@
 import { DataTypes, InferAttributes, InferCreationAttributes } from "sequelize";
 
 import { SyModel } from "../../core/models/SyModel";
-import { Field, Register } from "../../core/lib";
+import { Field } from "../../core/lib";
 import { ORM } from "../../settings";
 
-@Register
 export default class Category extends SyModel<
   InferAttributes<Category>,
   InferCreationAttributes<Category>

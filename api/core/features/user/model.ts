@@ -128,26 +128,26 @@ export class User extends SyModel<
    * Hooks to be executed before and after creating user instances.
    */
   public static hooks = {
-    beforeCreate: async (instance: User) => {
-      const { password, salt } = await UserService.hashPassword(
-        instance.password
-      );
-      instance.password = password;
-      instance.salt = salt;
-    },
-    beforeBulkCreate: async (users: User[], options: any) => {
-      const promises = users.map(async (user) => {
-        const { password, salt } = await UserService.hashPassword(
-          user.password
-        );
-        user.password = password;
-        user.salt = salt;
-      });
-      await Promise.all(promises);
-    },
+    // beforeCreate: async (instance: User) => {
+    //   const { password, salt } = await UserService.hashPassword(
+    //     instance.password
+    //   );
+    //   instance.password = password;
+    //   instance.salt = salt;
+    // },
+    // beforeBulkCreate: async (users: User[], options: any) => {
+    //   const promises = users.map(async (user) => {
+    //     const { password, salt } = await UserService.hashPassword(
+    //       user.password
+    //     );
+    //     user.password = password;
+    //     user.salt = salt;
+    //   });
+    //   await Promise.all(promises);
+    // },
     afterCreate: async (user: User, options: any) => {
       user.createBlankProfile();
-      SyModel.auditHooks.afterCreate(user, options);
+      // SyModel.auditHooks.afterCreate(user, options);
     },
   };
 
@@ -182,7 +182,7 @@ User.init(
   },
   {
     indexes: [{ fields: ["username"] }, { fields: ["role"] }],
-    hooks: { ...SyModel.auditHooks, ...User.hooks },
+    hooks: { ...User.hooks },
     tableName: "users",
     sequelize: ORM.database,
   }

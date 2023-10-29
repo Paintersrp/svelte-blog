@@ -23,6 +23,7 @@ import {
 } from "./managers";
 import { RouteConstructor } from "./managers/routes/types";
 import { DrizzleManager } from "./managers/drizzle/DrizzleManager";
+import { routeClassRegistry } from "../lib/decorators/models/register";
 
 /**
  * @class
@@ -139,18 +140,20 @@ export class SyServer {
     this.sessionManager = new SessionManager(app);
     this.middlewareManager = new MiddlewareManager(app, middleware);
     this.ssrManager = new SSRManager(app, this.router, distPath);
-    this.routeManager = new RouteManager(
-      app,
-      this.router,
-      this.lifecycleManager,
-      routes
-    );
+
     this.eventManager = new EventManager(this.logger, this.lifecycleManager);
     this.clusterManager = new ClusterManager(
       this.logger,
       this.lifecycleManager.start.bind(this)
     );
     this.drizzleManager = new DrizzleManager();
+
+    this.routeManager = new RouteManager(
+      app,
+      this.router,
+      this.lifecycleManager,
+      routes
+    );
   }
 
   /**

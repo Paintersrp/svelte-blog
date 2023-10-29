@@ -1,10 +1,14 @@
-import { QueryOptions, Sequelize } from 'sequelize';
+import { QueryOptions, Sequelize } from "sequelize";
 
-import * as settings from '../../../../settings';
-import { SyLogger } from '../../../logging/SyLogger';
-import { FixedAbstractQuery, FixedQueryOptions, QueryLogObjectContext } from './types';
-import { QueryLogObject } from '../../../logging/objects/QueryLogObject';
-import { SETTINGS } from '../../../../settings/settings';
+import * as settings from "../../../../settings";
+import { SyLogger } from "../../../logging/SyLogger";
+import {
+  FixedAbstractQuery,
+  FixedQueryOptions,
+  QueryLogObjectContext,
+} from "./types";
+import { QueryLogObject } from "../../../logging/objects/QueryLogObject";
+import { SETTINGS } from "../../../../settings/settings";
 
 /**
  * @todo USE RESPONSES ENUMS
@@ -38,14 +42,14 @@ export class QueryLogService {
    * @returns {void}
    */
   public startErrorLogging(): void {
-    process.on('unhandledRejection', (error: any) => {
+    process.on("unhandledRejection", (error: any) => {
       console.log(error);
-      this.logger.error('Unhandled Promise Rejection', error);
+      this.logger.error("Unhandled Promise Rejection", error);
     });
 
-    process.on('SIGINT', async () => {
+    process.on("SIGINT", async () => {
       await this.database.close();
-      this.logger.info('Database connection closed');
+      this.logger.info("Database connection closed");
       process.exit(0);
     });
   }
@@ -56,8 +60,8 @@ export class QueryLogService {
    * @returns {Promise<void>}
    */
   public async startQueryLogging(): Promise<void> {
-    this.database.addHook('beforeQuery', this.beforeQueryHook.bind(this));
-    this.database.addHook('afterQuery', this.afterQueryHook.bind(this));
+    // this.database.addHook('beforeQuery', this.beforeQueryHook.bind(this));
+    // this.database.addHook('afterQuery', this.afterQueryHook.bind(this));
   }
 
   /**
@@ -89,6 +93,8 @@ export class QueryLogService {
     }
   }
 
+  
+
   /**
    * Logs the executed query and its duration. If the duration is over 2000ms, a warning is logged and the query is further analyzed.
    * @param options - The options object for the query
@@ -102,15 +108,17 @@ export class QueryLogService {
     duration: number
   ): Promise<void> {
     const logObject = QueryLogObject.generate(options, meta, duration);
-    this.logger.logQuery('Query: ', logObject);
+    this.logger.logQuery("Query: ", logObject);
 
     // const logString = logObject.generateLogString();
     // this.logger.info(logString);
 
     if (duration > SETTINGS.DATABASES.DEFAULT.SLOW_QUERY_THRESHOLD) {
-      this.logger.warn(`Slow query detected. Query: ${logObject.sql}, Duration: ${duration}`);
+      this.logger.warn(
+        `Slow query detected. Query: ${logObject.sql}, Duration: ${duration}`
+      );
       const explanation = await this.database.query(`EXPLAIN ${logObject.sql}`);
-      this.logger.logQuery('Query explanation', { explanation });
+      this.logger.logQuery("Query explanation", { explanation });
     }
   }
 }

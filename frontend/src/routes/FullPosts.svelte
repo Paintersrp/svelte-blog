@@ -3,8 +3,8 @@
   import { sineIn, sineOut } from 'svelte/easing';
   import { slide } from 'svelte/transition';
 
-  import { estimateReadTime } from '$lib/estimateReadTime';
-  import { normalizeDate } from '$lib/normalizeDate';
+  import { estimateReadTime } from '$lib/utils/estimateReadTime';
+  import { normalizeDate } from '$lib/utils/normalizeDate';
 
   export let posts: App.Post[];
   export let currentCategories: (number | string)[];
@@ -25,8 +25,8 @@
     {#each filteredPosts as post (post.id)}
       <div
         class="flex-col items-start py-2 md:py-6"
-        in:slide={{ duration: 300, easing: sineIn, axis: 'y' }}
-        out:slide={{ duration: 300, easing: sineOut, axis: 'y' }}
+        in:slide|local={{ duration: 300, easing: sineIn, axis: 'y' }}
+        out:slide|local={{ duration: 300, easing: sineOut, axis: 'y' }}
       >
         <div class="flex">
           {#if post.thumbnailUrl}

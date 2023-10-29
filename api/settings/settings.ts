@@ -1,5 +1,5 @@
-import * as Middleware from '../middleware';
-import { RouteConstructor } from '../core/server/managers/routes/types';
+import * as Middleware from "../middleware";
+import { RouteConstructor } from "../core/server/managers/routes/types";
 import {
   AuthConfig,
   CacheConfig,
@@ -8,9 +8,9 @@ import {
   EmailConfig,
   JobConfig,
   LoggerConfig,
-} from '../types';
-import drizzleConfig from './drizzle';
-import { ComposedMiddleware } from 'koa-compose';
+} from "../types";
+import drizzleConfig from "./drizzle";
+import { ComposedMiddleware } from "koa-compose";
 
 // Jobs?
 // Health Checks?
@@ -20,14 +20,14 @@ import { ComposedMiddleware } from 'koa-compose';
 // Redis
 // Docs
 
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 
 function findProjectRoot(startPath: string): string | null {
   let currentPath = startPath;
 
-  while (currentPath !== '/') {
-    if (fs.existsSync(path.join(currentPath, 'package.json'))) {
+  while (currentPath !== "/") {
+    if (fs.existsSync(path.join(currentPath, "package.json"))) {
       return path.dirname(currentPath);
     }
     currentPath = path.dirname(currentPath);
@@ -37,18 +37,18 @@ function findProjectRoot(startPath: string): string | null {
 }
 export const SETTINGS = {
   ROOT_DIR: findProjectRoot(__dirname),
-  DEBUG: process.env.DEBUG === 'true',
-  SESSION_SECRET: process.env.SECRET_KEY || 'your_session_secret_key',
-  CURRENT_VERSION: '0.07',
-  STATIC_DIR: 'public',
+  DEBUG: process.env.DEBUG === "true",
+  SESSION_SECRET: process.env.SECRET_KEY || "your_session_secret_key",
+  CURRENT_VERSION: "0.07",
+  STATIC_DIR: "public",
 
   /**
    * User Database Configuration
    */
   DATABASES: {
     DEFAULT: {
-      PATH: '../dev.sqlite3',
-      TYPE: 'sqlite',
+      PATH: "../dev.sqlite3",
+      TYPE: "sqlite",
       POOL: {
         max: 5,
         min: 0,
@@ -70,12 +70,12 @@ export const SETTINGS = {
 
   // Email configuration
   EMAIL: {
-    EMAIL_BACKEND: 'syrup.mail.console',
+    EMAIL_BACKEND: "syrup.mail.console",
   } as EmailConfig,
 
   // Cache configuration
   CACHE: {
-    TYPE: 'in-memory',
+    TYPE: "in-memory",
     OPTIONS: {
       defaultTTL: 30000,
       maxCacheSize: 200,
@@ -98,7 +98,7 @@ export const SETTINGS = {
   MAINTENANCE: {
     MODE: false,
     STATUS: 503,
-    MESSAGE: 'We are upgrading our system. Please try again later.',
+    MESSAGE: "We are upgrading our system. Please try again later.",
     END_ESTIMATE: undefined,
   },
 
@@ -106,14 +106,15 @@ export const SETTINGS = {
   MIDDLEWARES: Middleware.compose([
     Middleware.cors(),
     // Middleware.circuitBreakerMiddleware,
+    // Middleware.koaBody(),
     Middleware.nonceMiddleware,
     Middleware.helmetMiddleware,
     Middleware.bodyParser({
-      jsonLimit: '2mb',
+      jsonLimit: "2mb",
     }),
     Middleware.rateLimitMiddleware,
     Middleware.maintenanceMiddleware,
-    Middleware.serve('public'),
+    Middleware.serve("public"),
   ]) as ComposedMiddleware<any>,
 
   // Route configurations
@@ -121,15 +122,15 @@ export const SETTINGS = {
 
   // Authentication configuration
   AUTH: {
-    ADMIN_ROLES: ['super', 'admin'],
-    STRATEGY: 'jwt',
+    ADMIN_ROLES: ["super", "admin"],
+    STRATEGY: "jwt",
     // JWT_SECRET: 'your-jwt-secret',
-    JWT_SECRET: 'your_jwt_secret_key',
+    JWT_SECRET: "your_jwt_secret_key",
   } as AuthConfig,
 
   // Job processing configuration
   JOBS: {
-    ENGINE: 'bull',
+    ENGINE: "bull",
     CONCURRENCY: 5,
   } as JobConfig,
 

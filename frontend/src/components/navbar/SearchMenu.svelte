@@ -1,8 +1,8 @@
 <script lang="ts">
   import { slide } from 'svelte/transition';
   import { sineInOut } from 'svelte/easing';
-  import { estimateReadTime } from '$lib/estimateReadTime';
-  import { normalizeDate } from '$lib/normalizeDate';
+  import { estimateReadTime } from '$lib/utils/estimateReadTime';
+  import { normalizeDate } from '$lib/utils/normalizeDate';
 
   export let searchResults: App.Post[];
   export let showDropdown: boolean;

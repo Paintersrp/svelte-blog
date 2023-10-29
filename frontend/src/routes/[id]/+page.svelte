@@ -1,22 +1,34 @@
 <script lang="ts">
-  import { normalizeDate } from '$lib/normalizeDate.js';
+  import { normalizeDate } from '$lib/utils/normalizeDate.js';
+  import { slide } from 'svelte/transition';
+  import { page } from '$app/stores';
+
+  import { toastStore } from '$lib/stores/toast.js';
+  import { applyAction, enhance } from '$app/forms';
+
   export let data;
+  export let form;
+
   $: post = data.post;
   let newComment = '';
 
   async function handleCommentSubmit() {
-    const response = await fetch('http://localhost:4000/comments', {
+    const response = await fetch('http://localhost:4000/comments?includes=User', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ content: newComment, postId: post.id, authorId: 1 })
+      body: JSON.stringify({ content: newComment, postId: post.id, authorId: $page.data.user.id })
     });
 
     if (response.ok) {
       const createdComment = await response.json();
-      post.Comments = [...post.Comments, createdComment];
+      console.log(createdComment.data);
+
+      post.Comments = [...post.Comments, createdComment.data];
       newComment = '';
+
+      toastStore.addToast('Comment successful!', 'success', 'top-right', 300000);
     } else {
       console.error('Failed to post comment:', await response.text());
     }
@@ -63,14 +75,14 @@
   <section class="prose prose-lg text-gray-500 mx-auto mb-12">
     {@html post.content}
   </section>
-  <footer class="border-t pt-6">
+  <footer class="pt-6 bg-lime-100 p-4 rounded-lg shadow-lg">
     <div class="text-gray-500 text-sm mb-4">
       {post.Comments.length}
       {post.Comments.length === 1 ? ' comment' : ' comments'}
     </div>
 
     {#each post.Comments as comment, index (comment.id)}
-      <div class="mt-6 border-t pt-6">
+      <div class="mt-6 pt-6 bg-lime-50 p-4 rounded-lg shadow-sm" transition:slide>
         <div class="flex items-center mb-2">
           <div class="mr-4">
             <img
@@ -79,9 +91,9 @@
               class="rounded-full w-10 h-10"
             />
           </div>
-          <div>
+          <div class="flex w-full justify-between">
             <span class="font-semibold text-gray-800">{comment.User.username}</span>
-            <span class="ml-2 text-sm text-gray-500">Comment #{index + 1}</span>
+            <span class="ml-2 text-sm text-gray-500">#{index + 1}</span>
           </div>
         </div>
         <p class="text-sm text-gray-500">
@@ -90,19 +102,43 @@
       </div>
     {/each}
 
-    <div class="mt-6 border-t pt-6">
+    <form
+      method="POST"
+      action="?/addComment"
+      class="mt-6 border-t pt-6"
+      use:enhance={() => {
+        return async ({ result, update }) => {
+          update({ reset: true });
+          await applyAction(result);
+
+          if (result.status === 200) {
+            toastStore.addToast('Comment Successful!', 'info', 'top-right', 5000);
+          }
+        };
+      }}
+    >
       <textarea
-        class="w-full p-2 border rounded-lg border-lime-500 focus:outline-none focus:ring-1 focus:ring-lime-500"
-        placeholder="Add a comment..."
+        id="content"
+        name="content"
+        class="w-full p-2 border rounded-lg border-lime-500 focus:outline-none focus:ring-1 focus:ring-lime-500 {$page
+          .data.user
+          ? ''
+          : 'bg-gray-200 cursor-not-allowed'}"
+        placeholder={$page.data.user ? 'Add a comment...' : 'Login to add comments'}
         rows={4}
-        bind:value={newComment}
+        disabled={!$page.data.user}
       />
+      {#if form?.missing}
+        <p class="text-red-500">This field is required</p>
+      {/if}
       <button
-        class="mt-2 px-4 py-2 bg-lime-600 text-white rounded-lg"
-        on:click={handleCommentSubmit}
+        class="mt-2 px-4 py-2 bg-lime-600 text-white rounded-lg {$page.data.user && !form?.missing
+          ? 'hover:bg-lime-700'
+          : 'bg-gray-200 cursor-not-allowed'}"
+        disabled={!$page.data.user && !form?.missing}
       >
         Submit
       </button>
-    </div>
+    </form>
   </footer>
 </article>

@@ -8,6 +8,10 @@ import { APP_CACHE } from "./settings/internal/cache"; // After other internal, 
 import { InlineStylesProcessor } from "./core/server/managers/generation/inline-styles/InlineStylesProcessor";
 import { User } from "./core/features/user";
 import { seedData } from "./utils/seedData";
+import CommentRoutes from "./models/comment/routes";
+import CategoryRoutes from "./models/category/routes";
+import TagRoutes from "./models/tag/routes";
+import PostRoutes from "./models/post/routes";
 
 const koa = new Koa();
 // koa.use(serve('../web/test/dist'));
@@ -19,7 +23,7 @@ export const server = new SyServer({
   cache: APP_CACHE,
   ORM: internal.ORM,
   middleware: SETTINGS.MIDDLEWARES,
-  routes: SETTINGS.ROUTES,
+  routes: [CommentRoutes, CategoryRoutes, PostRoutes, TagRoutes],
   version: SETTINGS.CURRENT_VERSION,
 });
 
