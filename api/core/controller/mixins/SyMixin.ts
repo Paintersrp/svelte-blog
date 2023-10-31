@@ -48,7 +48,7 @@ export abstract class SyMixin {
    * @param {string} message - Response message.
    * @param {string} error - Response error code.
    */
-  protected createResponse(
+  public createResponse(
     ctx: RouterContext,
     status: HttpStatus,
     body: unknown,
@@ -90,7 +90,7 @@ export abstract class SyMixin {
    * @param {Transaction} transaction - The Sequelize transaction.
    * @returns {Promise<Model>} A promise that resolves to the found item.
    */
-  protected async findItemById(
+  public async findItemById(
     id: string,
     findOptions: Omit<FindOptions<any>, "where">,
     transaction?: Transaction
@@ -125,7 +125,7 @@ export abstract class SyMixin {
    * @param {Transaction} transaction - The Sequelize transaction.
    * @returns {Promise<Model>} A promise that resolves to the found item.
    */
-  protected async findItem(
+  public async findItem(
     field: string,
     value: string | number,
     transaction?: Transaction
@@ -144,12 +144,12 @@ export abstract class SyMixin {
    * @param {Model} item - The id of the item to be found.
    * @returns {string} A promise that resolves to the found item.
    */
-  protected getModelName(item: Model): string {
+  public getModelName(item: Model): string {
     const modelName = item.constructor.name.replace("SequelizeModel", "");
     return modelName;
   }
 
-  protected getModelNamePlural(item: Model): string {
+  public getModelNamePlural(item: Model): string {
     return `${this.getModelName(item)}s`;
   }
 
@@ -160,7 +160,7 @@ export abstract class SyMixin {
    * @param {FieldDTO} fields - The model instance to be updated.
    * @returns {Model} Returns updated model
    */
-  protected updateModelFields(model: Model, fields: FieldDTO): Model {
+  public updateModelFields(model: Model, fields: FieldDTO): Model {
     Object.assign(model, fields);
     return model;
   }
@@ -170,7 +170,7 @@ export abstract class SyMixin {
    *
    * @see RequestProcessor#checkPermission
    */
-  protected async checkPermission(ctx: RouterContext): Promise<void> {
+  public async checkPermission(ctx: RouterContext): Promise<void> {
     this.requestProcessor.checkPermission(ctx);
   }
 
@@ -179,7 +179,7 @@ export abstract class SyMixin {
    *
    * @see RequestProcessor#processPayload
    */
-  protected processPayload(
+  public processPayload(
     ctx: RouterContext,
     arrayCheck: boolean = false
   ): unknown {
@@ -191,7 +191,7 @@ export abstract class SyMixin {
    *
    * @see RequestProcessor#processParam
    */
-  protected processParam(ctx: RouterContext, paramName: string): string {
+  public processParam(ctx: RouterContext, paramName: string): string {
     return this.requestProcessor.processParam(ctx, paramName);
   }
 
@@ -200,7 +200,7 @@ export abstract class SyMixin {
    *
    * @see RequestProcessor#processBodyParam
    */
-  protected processBodyParam(ctx: RouterContext, paramName: string): string {
+  public processBodyParam(ctx: RouterContext, paramName: string): string {
     return this.requestProcessor.processBodyParam(ctx, paramName);
   }
 
@@ -209,7 +209,7 @@ export abstract class SyMixin {
    *
    * @see RequestProcessor#processHeader
    */
-  protected processHeader(
+  public processHeader(
     ctx: RouterContext,
     headerName: string
   ): string | string[] | undefined {
@@ -221,7 +221,7 @@ export abstract class SyMixin {
    *
    * @see QueryProcessor#processQueryParams
    */
-  protected async processQueryParams(ctx: RouterContext): Promise<FindOptions> {
+  public async processQueryParams(ctx: RouterContext): Promise<FindOptions> {
     return this.queryProcessor.processQueryParams(ctx);
   }
 }

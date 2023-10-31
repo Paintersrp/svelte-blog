@@ -1,6 +1,6 @@
-import { Middleware } from 'koa';
-import { Logger } from 'pino';
-import { Model, ModelStatic } from 'sequelize';
+import { Middleware } from "koa";
+import { Logger } from "pino";
+import { Model, ModelStatic } from "sequelize";
 import {
   SyCreateMixin,
   SyDeleteMixin,
@@ -8,7 +8,7 @@ import {
   SyMiddlewareMixin,
   SyReadMixin,
   SyUpdateMixin,
-} from './mixins';
+} from "./mixins";
 
 export interface SyControllerOptions {
   model: ModelStatic<any>;
@@ -17,14 +17,19 @@ export interface SyControllerOptions {
   middlewares?: Middleware[];
 }
 
-export type ControllerMixinOptions = { model: ModelStatic<Model>; logger: Logger };
-export type ControllerMixinMiddlewareOptions = ControllerMixinOptions & { schema: any };
+export type ControllerMixinOptions = {
+  model: ModelStatic<Model>;
+  logger: Logger;
+};
+export type ControllerMixinMiddlewareOptions = ControllerMixinOptions & {
+  schema: any;
+};
 
 export interface ControllerQueryOptions {
   page?: number;
   pageSize?: number;
   sort?: string;
-  sortOrder?: 'ASC' | 'DESC';
+  sortOrder?: "ASC" | "DESC";
   filter?: string;
   column?: string;
   price_greater_than?: number;

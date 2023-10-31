@@ -16,6 +16,7 @@ import {
 import { ControllerMixins, SyControllerOptions } from "./types";
 import { TransactionManager } from "../transactions";
 import { InternalMethodsToBind } from "./enums";
+import koaBody from "koa-body";
 
 /**
  * @class SyController
@@ -229,4 +230,14 @@ export class SyController extends EventEmitter {
   public async getMetadata(ctx: Router.RouterContext): Promise<void> {
     this.mixins.meta.getMetadata(ctx);
   }
+
+  // public handleCreate() {
+  //   return koaBody({
+  //     multipart: true,
+  //     formidable: {
+  //       uploadDir: "./uploads", 
+  //       keepExtensions: true, 
+  //     },
+  //   });
+  // }
 }

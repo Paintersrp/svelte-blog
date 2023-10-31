@@ -1,20 +1,21 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import SearchMenu from './SearchMenu.svelte';
+  import { debounce } from 'lodash';
 
   let searchQuery = '';
   let searchResults: App.Post[] = [];
 
   $: showDropdown = false;
 
-  // const debouncedSearch = debounce(async (query) => {
-  //   const response = await fetch(
-  //     `http://localhost:4000/posts?searchColumns=title&search=${query}&includes=User,Comment,Tag,Category`
-  //   ).then((res) => res.json());
+  const debouncedSearch = debounce(async (query) => {
+    const response = await fetch(
+      `http://localhost:4000/posts?searchColumns=title&search=${query}&includes=User,Comment,Tag,Category`
+    ).then((res) => res.json());
 
-  //   searchResults = response.data.data;
-  //   showDropdown = searchResults.length > 0;
-  // }, 300);
+    searchResults = response.data.data;
+    showDropdown = searchResults.length > 0;
+  }, 300);
 
   const instantSearch = async (query: string) => {
     const response = await fetch(
@@ -29,7 +30,7 @@
     searchQuery = event.target.value;
 
     if (searchQuery) {
-      instantSearch(searchQuery);
+      debouncedSearch(searchQuery);
     } else {
       showDropdown = false;
     }

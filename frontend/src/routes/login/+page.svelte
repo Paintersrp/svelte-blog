@@ -1,15 +1,10 @@
 <script lang="ts">
-  export let form;
-  import { applyAction, enhance } from '$app/forms';
-  import { goto } from '$app/navigation';
-  import { toastStore } from '$lib/stores/toast';
+  import { enhance } from '$app/forms';
+  import { redirectWithToast } from '$lib/utils/redirectWithToast.js';
 
-  console.log(form);
+  export let form;
 </script>
 
-<pre class="flex mx-4 my-2 rounded-sm min-h-[250px] bg-lime-300 border border-lime-600">
-  {JSON.stringify(form, null, 2)}
-</pre>
 <section class="flex flex-grow items-center justify-center p-8">
   <div
     class="flex flex-col md:flex-row bg-white p-8 rounded-lg shadow-lg w-full max-w-5xl bg-gradient-to-r from-lime-400 to-lime-400 gap-8 mb-class"
@@ -23,20 +18,7 @@
       <form
         method="POST"
         class="space-y-6"
-        use:enhance={() => {
-          return async ({ result }) => {
-            if (result.type === 'redirect') {
-              goto(result.location).then(() =>
-                setTimeout(
-                  () => toastStore.addToast('Login Successful!', 'success', 'top-right', 5000),
-                  400
-                )
-              );
-            } else {
-              await applyAction(result);
-            }
-          };
-        }}
+        use:enhance={() => redirectWithToast('Login Successful!')}
       >
         <div class="relative">
           <input

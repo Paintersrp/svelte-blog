@@ -1,7 +1,6 @@
 <script lang="ts">
-  import { applyAction, enhance } from '$app/forms';
-  import { goto } from '$app/navigation';
-  import { toastStore } from '$lib/stores/toast';
+  import { enhance } from '$app/forms';
+  import { redirectWithToast } from '$lib/utils/redirectWithToast';
 </script>
 
 <section class="flex flex-grow items-center justify-center p-8">
@@ -17,21 +16,7 @@
         method="POST"
         action="?/register"
         class="space-y-6"
-        use:enhance={() => {
-          return async ({ result }) => {
-            if (result.type === 'redirect') {
-              goto(result.location).then(() =>
-                setTimeout(
-                  () =>
-                    toastStore.addToast('Registration Successful!', 'success', 'top-right', 5000),
-                  400
-                )
-              );
-            } else {
-              await applyAction(result);
-            }
-          };
-        }}
+        use:enhance={() => redirectWithToast('Registration Successful!')}
       >
         <div class="relative">
           <input

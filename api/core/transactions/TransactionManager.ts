@@ -1,9 +1,9 @@
-import { RouterContext } from 'koa-router';
-import { Logger } from 'pino';
-import { Transaction } from 'sequelize';
-import { ORM } from '../../settings';
-import { InternalServerError } from '../errors/server';
-import { Responses } from '../lib';
+import { RouterContext } from "koa-router";
+import { Logger } from "pino";
+import { Transaction } from "sequelize";
+import { ORM } from "../../settings";
+import { InternalServerError } from "../errors/server";
+import { Responses } from "../lib";
 
 export class TransactionManager {
   private logger: Logger;
@@ -19,8 +19,12 @@ export class TransactionManager {
    * @param {Object} mixin - The Mixin object which has the action method.
    * @return {Promise<void>} Promise represents the completion of the transactional operation.
    */
-  public async performTransaction(ctx: RouterContext, action: string, mixin: any): Promise<void> {
-    if (typeof mixin[action] !== 'function') {
+  public async performTransaction(
+    ctx: RouterContext,
+    action: string,
+    mixin: any
+  ): Promise<void> {
+    if (typeof mixin[action] !== "function") {
       throw new Error(`Mixin does not have a method named "${action}"`);
     }
     return this.withTransaction(ctx, async (transaction) => {
@@ -36,7 +40,7 @@ export class TransactionManager {
    * @param {Function} callback - Callback function to be executed within the transaction.
    * @return {Promise<T>} The result of the callback function execution.
    */
-  private async withTransaction<T>(
+  public async withTransaction<T>(
     ctx: RouterContext,
     callback: (transaction: Transaction) => Promise<T>
   ): Promise<T> {
@@ -53,9 +57,13 @@ export class TransactionManager {
         await transaction.rollback();
       }
 
-      this.logger.error(error, 'Transaction failed');
+      this.logger.error(error, "Transaction failed");
       console.log(error);
-      throw new InternalServerError(Responses.INTERNAL_SERVER, transaction as any, ctx.url);
+      throw new InternalServerError(
+        Responses.INTERNAL_SERVER,
+        transaction as any,
+        ctx.url
+      );
     }
   }
 }

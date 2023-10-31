@@ -4,10 +4,10 @@
   import { backIn, backOut } from 'svelte/easing';
   import { afterNavigate, beforeNavigate, disableScrollHandling, goto } from '$app/navigation';
 
-  import Navbar from '$comp/navbar/Navbar.svelte';
-  import Footer from '$comp/Footer.svelte';
   import { toastStore } from '$lib/stores/toast';
-  import ToastContainer from '$comp/ToastContainer.svelte';
+  import Navbar from '$comp/layout/navbar/Navbar.svelte';
+  import Footer from '$comp/layout/Footer.svelte';
+  import ToastContainer from '$comp/layout/ToastContainer.svelte';
 
   export let data;
 
@@ -23,11 +23,11 @@
   });
 
   function showToast() {
-    toastStore.addToast('Login Successful!', 'success', 'top-right', 5000);
-    setTimeout(() => toastStore.addToast('Login Failed!', 'error', 'top-right', 5000), 500);
-    setTimeout(() => toastStore.addToast('Message Received!', 'info', 'top-right', 5000), 1000);
+    toastStore.addToast('Login Successful!', 'success', 'top-right', 2000000);
+    setTimeout(() => toastStore.addToast('Login Failed!', 'error', 'top-right', 2000000), 500);
+    setTimeout(() => toastStore.addToast('Message Received!', 'info', 'top-right', 2000000), 1000);
     setTimeout(
-      () => toastStore.addToast('Message Box is Full!', 'warning', 'top-right', 5000),
+      () => toastStore.addToast('Message Box is Full!', 'warning', 'top-right', 2000000),
       1500
     );
   }
@@ -74,7 +74,6 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    /* background-color: hsl(82 80% 96% / 1); */
     background-color: hsl(82 80% 96% / 1);
     color: var(--textPrimary);
     scroll-behavior: smooth;

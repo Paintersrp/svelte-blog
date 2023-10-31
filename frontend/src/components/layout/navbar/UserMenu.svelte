@@ -57,7 +57,7 @@
         x: 100,
         easing: backIn
       }}
-      class="absolute right-0 {marginTop} w-48 bg-white border border-gray-300 rounded-lg shadow-lg py-0 transition transform origin-top-right duration-400 ease-out"
+      class="absolute right-0 {marginTop} w-48 bg-white border border-gray-300 rounded-lg shadow-lg py-0 transition transform origin-top-right duration-500 ease-in-out"
     >
       {#if !$page.data.user}
         <a

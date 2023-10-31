@@ -47,7 +47,13 @@
 	"type": "module",
 	"dependencies": {
 		"@tiptap/core": "^2.1.12",
+		"@tiptap/extension-bubble-menu": "^2.1.12",
+		"@tiptap/extension-floating-menu": "^2.1.12",
+		"@tiptap/extension-image": "^2.1.12",
+		"@tiptap/extension-text-align": "^2.1.12",
+		"@tiptap/extension-underline": "^2.1.12",
 		"@tiptap/pm": "^2.1.12",
-		"@tiptap/starter-kit": "^2.1.12"
+		"@tiptap/starter-kit": "^2.1.12",
+		"clsx": "^2.0.0"
 	}
 }

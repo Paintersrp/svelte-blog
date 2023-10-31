@@ -11,7 +11,6 @@ import {
 } from "../types";
 import drizzleConfig from "./drizzle";
 import { ComposedMiddleware } from "koa-compose";
-
 // Jobs?
 // Health Checks?
 // AuditLogging?
@@ -106,15 +105,21 @@ export const SETTINGS = {
   MIDDLEWARES: Middleware.compose([
     Middleware.cors(),
     // Middleware.circuitBreakerMiddleware,
-    // Middleware.koaBody(),
+    Middleware.koaBody({
+      multipart: true,
+      formidable: {
+        uploadDir: "../frontend/static/uploads", // directory where files will be uploaded
+        keepExtensions: true, // keep file extension
+      },
+    }),
     Middleware.nonceMiddleware,
     Middleware.helmetMiddleware,
-    Middleware.bodyParser({
-      jsonLimit: "2mb",
-    }),
+    // Middleware.bodyParser({
+    //   jsonLimit: "2mb",
+    // }),
     Middleware.rateLimitMiddleware,
     Middleware.maintenanceMiddleware,
-    Middleware.serve("public"),
+    Middleware.serve("uploads"),
   ]) as ComposedMiddleware<any>,
 
   // Route configurations

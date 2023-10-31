@@ -12,9 +12,10 @@ import CommentRoutes from "./models/comment/routes";
 import CategoryRoutes from "./models/category/routes";
 import TagRoutes from "./models/tag/routes";
 import PostRoutes from "./models/post/routes";
+import serve from "koa-static";
 
 const koa = new Koa();
-// koa.use(serve('../web/test/dist'));
+koa.use(serve("./uploads"));
 
 export const server = new SyServer({
   app: koa,

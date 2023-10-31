@@ -1,4 +1,5 @@
 import { axios } from '$lib/utils/axios';
+import type { Cookies } from '@sveltejs/kit';
 import bcrypt from 'bcryptjs';
 
 export const getUser = (loginData: LoginDTO): Promise<AuthResponse> => {
@@ -35,6 +36,17 @@ export const useSalt = async (formData: LoginDTO): Promise<LoginDTO> => {
       password: formData.password
     };
   }
+};
+
+export const setCookies = async (
+  cookies: Cookies,
+  user: AuthResponse,
+  username: string
+): Promise<void> => {
+  cookies.set('jwt', user.data.accessToken, cookieSettings);
+  cookies.set('refresh', user.data.refreshToken, cookieSettings);
+  cookies.set('username', username, cookieSettings);
+  cookies.set('userid', String(user.data.id), cookieSettings);
 };
 
 export const cookieSettings = {

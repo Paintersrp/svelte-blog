@@ -31,7 +31,11 @@ export class SyCreateMixin extends SyMixin {
    * @param {Router.RouterContext} ctx - The context object from Koa.
    * @param {Transaction} transaction - The Sequelize transaction.
    */
-  public async create(ctx: Router.RouterContext, transaction: Transaction) {
+  public async create(
+    ctx: Router.RouterContext,
+    transaction: Transaction,
+    relay: boolean = false
+  ) {
     const payload = this.processPayload(ctx) as
       | Optional<any, string>
       | undefined;
@@ -48,6 +52,10 @@ export class SyCreateMixin extends SyMixin {
       findOptions,
       transaction
     );
+
+    if (relay) {
+      return itemWithQuery;
+    }
 
     this.createResponse(
       ctx,

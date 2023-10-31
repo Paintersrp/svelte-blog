@@ -3,36 +3,13 @@
   import { slide } from 'svelte/transition';
   import { page } from '$app/stores';
 
-  import { toastStore } from '$lib/stores/toast.js';
-  import { applyAction, enhance } from '$app/forms';
+  import { enhance } from '$app/forms';
+  import { enhanceWithToast } from '$lib/utils/enhanceWithToast.js';
 
   export let data;
   export let form;
 
   $: post = data.post;
-  let newComment = '';
-
-  async function handleCommentSubmit() {
-    const response = await fetch('http://localhost:4000/comments?includes=User', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ content: newComment, postId: post.id, authorId: $page.data.user.id })
-    });
-
-    if (response.ok) {
-      const createdComment = await response.json();
-      console.log(createdComment.data);
-
-      post.Comments = [...post.Comments, createdComment.data];
-      newComment = '';
-
-      toastStore.addToast('Comment successful!', 'success', 'top-right', 300000);
-    } else {
-      console.error('Failed to post comment:', await response.text());
-    }
-  }
 </script>
 
 <article class="max-w-7xl mx-auto my-4 p-4 sm:p-6 lg:p-8">
@@ -106,16 +83,7 @@
       method="POST"
       action="?/addComment"
       class="mt-6 border-t pt-6"
-      use:enhance={() => {
-        return async ({ result, update }) => {
-          update({ reset: true });
-          await applyAction(result);
-
-          if (result.status === 200) {
-            toastStore.addToast('Comment Successful!', 'info', 'top-right', 5000);
-          }
-        };
-      }}
+      use:enhance={() => enhanceWithToast('Comment Succesful!')}
     >
       <textarea
         id="content"

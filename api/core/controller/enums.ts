@@ -8,4 +8,5 @@ export enum InternalMethodsToBind {
   // CACHE = 'cacheEndpoint',
   META = "getMetadata",
   OPTIONS = "options",
+  // HANDLE_CREATE = "handleCreate",
 }

@@ -13,12 +13,9 @@ export const handle: Handle = async ({ event, resolve }) => {
     id: Number(id)
   };
 
-  console.log(event.url);
-
   const logout = event.url.searchParams.get('logout');
 
   if (logout) {
-    console.log('deleting cookies');
     event.cookies.delete('jwt', { path: '/' });
     event.cookies.delete('refresh', { path: '/' });
     event.cookies.delete('username', { path: '/' });

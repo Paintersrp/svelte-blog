@@ -104,6 +104,14 @@ declare global {
   interface CSSStyleDeclaration {
     viewTransitionName: string;
   }
+
+  type EnhanceUpdate = (
+    options?:
+      | {
+          reset: boolean;
+        }
+      | undefined
+  ) => Promise<void>;
 }
 
 export {};

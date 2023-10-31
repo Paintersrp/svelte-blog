@@ -1,5 +1,5 @@
 import { fail, redirect } from '@sveltejs/kit';
-import { cookieSettings, getUser, useSalt } from './utils.js';
+import { getUser, setCookies, useSalt } from './utils.js';
 
 export const actions = {
   default: async ({ request, cookies }) => {
@@ -32,15 +32,9 @@ export const actions = {
 
     if (user) {
       if (remember) {
-        cookies.set('jwt', user.data.accessToken, cookieSettings);
-        cookies.set('refresh', user.data.refreshToken, cookieSettings);
-        cookies.set('username', username, cookieSettings);
-        cookies.set('userid', String(user.data.id), cookieSettings);
+        setCookies(cookies, user, username);
       } else {
-        cookies.set('jwt', user.data.accessToken, cookieSettings);
-        cookies.set('refresh', user.data.refreshToken, cookieSettings);
-        cookies.set('username', username, cookieSettings);
-        cookies.set('userid', String(user.data.id), cookieSettings);
+        setCookies(cookies, user, username);
       }
 
       throw redirect(303, '/');

@@ -1,10 +1,11 @@
 <script lang="ts">
-  import Hero from './Hero.svelte';
-  import CategoryScroller from './CategoryScroller.svelte';
-  import FullPosts from './FullPosts.svelte';
-  import HomeSidebar from './HomeSidebar.svelte';
   import { onMount } from 'svelte';
-  import Loading from '$comp/Loading.svelte';
+
+  import Hero from '$comp/home/Hero.svelte';
+  import CategoryScroller from '$comp/home/CategoryScroller.svelte';
+  import FullPosts from '$comp/home/FullPosts.svelte';
+  import HomeSidebar from '$comp/home/HomeSidebar.svelte';
+  import Loading from '$comp/home/Loading.svelte';
 
   export let data;
 
@@ -13,7 +14,6 @@
   let totalPosts: number = data.totalPosts || 0;
   let totalPages: number = Math.round(data.totalPosts / 25);
 
-  let search: string = '';
   let currentCategories: string[] = ['All'];
   let page = 1;
   let isLoading = false;
@@ -26,17 +26,13 @@
 
     isLoading = true;
 
-    // await new Promise((resolve) => setTimeout(resolve, 250));
-
     const response = await fetch(
       `http://localhost:4000/posts?pageSize=25&page=${page}&includes=User,Comment,Tag,Category`
     );
     const responseData = await response.json();
-    posts = [...posts, ...responseData.data.data];
 
-    // setTimeout(() => {
+    posts = [...posts, ...responseData.data.data];
     isLoading = false;
-    // }, 750);
   };
 
   const loadFilteredPosts = async () => {
@@ -48,8 +44,6 @@
       const searchValues = currentCategories.join(',');
       url += `&searchColumns=categoryId&search=${searchValues}`;
     }
-
-    // await new Promise((resolve) => setTimeout(resolve, 250));
 
     const response = await fetch(url);
     const data = await response.json();

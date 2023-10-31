@@ -1,5 +1,5 @@
 import { redirect } from '@sveltejs/kit';
-import { cookieSettings } from '../login/utils.js';
+import { setCookies } from '../login/utils.js';
 import { useRegister } from './utils.js';
 
 export const actions = {
@@ -13,10 +13,7 @@ export const actions = {
       const user = await useRegister({ username, password });
 
       if (user) {
-        cookies.set('jwt', user.data.accessToken, cookieSettings);
-        cookies.set('refresh', user.data.refreshToken, cookieSettings);
-        cookies.set('username', username, cookieSettings);
-        cookies.set('userid', String(user.data.id), cookieSettings);
+        setCookies(cookies, user, username);
 
         throw redirect(303, '/');
       }

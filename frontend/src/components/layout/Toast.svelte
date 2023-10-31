@@ -88,12 +88,4 @@
     appearance: none;
     width: 100%;
   }
-  /* progress::-webkit-progress-bar,
-  progress::-moz-progress-bar {
-    background-color: rgb(229 231 235 / 1);
-  }
-  progress::-webkit-progress-value,
-  progress::-moz-progress-bar {
-    background-color: hsl(90 71% 23% / 1);
-  } */
 </style>
