@@ -1,11 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
 
-  import Hero from '$comp/home/Hero.svelte';
-  import CategoryScroller from '$comp/home/CategoryScroller.svelte';
-  import FullPosts from '$comp/home/FullPosts.svelte';
-  import HomeSidebar from '$comp/home/HomeSidebar.svelte';
-  import Loading from '$comp/home/Loading.svelte';
+  import { CategoryScroller, FullPosts, Hero, HomeSidebar } from '$comp/home';
+  import { Loading } from '$comp/general';
 
   export let data;
 
@@ -107,7 +104,7 @@
   <main id="content">
     <FullPosts bind:posts {currentCategories} on:hidePost={hidePost} />
     {#if isLoading}
-      <Loading />
+      <Loading message="Loading more posts..." />
     {/if}
   </main>
 </div>

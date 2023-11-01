@@ -3,14 +3,16 @@ import type { Handle } from '@sveltejs/kit';
 export const handle: Handle = async ({ event, resolve }) => {
   const username = event.cookies.get('username');
   const id = event.cookies.get('userid');
+  const role = event.cookies.get('role');
 
-  if (!username || !id) {
+  if (!username || !id || !role) {
     return await resolve(event);
   }
 
   event.locals.user = {
-    username: username,
-    id: Number(id)
+    username,
+    id: Number(id),
+    role
   };
 
   const logout = event.url.searchParams.get('logout');
@@ -20,6 +22,7 @@ export const handle: Handle = async ({ event, resolve }) => {
     event.cookies.delete('refresh', { path: '/' });
     event.cookies.delete('username', { path: '/' });
     event.cookies.delete('userid', { path: '/' });
+    event.cookies.delete('role', { path: '/' });
     event.locals.logout = true;
   }
 

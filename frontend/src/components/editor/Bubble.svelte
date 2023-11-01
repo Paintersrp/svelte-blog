@@ -2,7 +2,6 @@
   import { onDestroy, onMount } from 'svelte';
   import { BubbleMenuPlugin, type BubbleMenuPluginProps } from '@tiptap/extension-bubble-menu';
   import type { Editor } from './utils/Editor';
-  import { fade } from 'svelte/transition';
 
   export let editor: Editor;
   export let tippyOptions: BubbleMenuPluginProps['tippyOptions'] = {};

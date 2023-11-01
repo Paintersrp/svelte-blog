@@ -62,7 +62,7 @@
   on:mouseleave={resumeToast}
   in:fly|local={{ x: 100, duration: 400, delay: 400, easing: backOut }}
   out:fly|local={{ x: 100, duration: 400, easing: backIn }}
-  class={`flex items-center opacity-100 ${bgColor} text-white px-4 py-2 rounded shadow-lg z-50 min-w-[225px] whitespace-normal relative`}
+  class={`flex items-center opacity-100 ${bgColor} text-white px-4 py-2 rounded shadow-lg z-50 min-w-[275px] max-w-[275px] relative`}
 >
   <progress
     class="w-full absolute inset-x-0 bottom-0 h-[3px] rounded-b bg-gray-200 transition-all"

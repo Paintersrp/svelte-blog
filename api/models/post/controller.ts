@@ -1,15 +1,15 @@
 import { Logger } from "pino";
-import { SyController } from "../../core/controller";
-import Post from "./model";
-import PostSchema from "./schema";
 import Router from "koa-router";
-import { Optional } from "sequelize";
-import Tag from "../tag/model";
-import Category from "../category/model";
-import { HttpStatus } from "../../core/lib";
-import { ControllerMessages } from "../../core/messages/services";
 import fs from "fs-extra";
 import path from "path";
+
+import { ControllerResponses, HttpStatus } from "../../core/lib";
+import { SyController } from "../../core/controller";
+
+import Tag from "../tag/model";
+import Category from "../category/model";
+import Post from "./model";
+import PostSchema from "./schema";
 
 export class PostController extends SyController {
   constructor(logger: Logger) {
@@ -71,10 +71,7 @@ export class PostController extends SyController {
       ctx,
       HttpStatus.CREATED,
       post,
-      ControllerMessages.SUCCESS(
-        this.mixins.create.getModelName(post),
-        "create"
-      )
+      ControllerResponses.CREATE_SUCCESS(this.mixins.create.getModelName(post))
     );
   }
 

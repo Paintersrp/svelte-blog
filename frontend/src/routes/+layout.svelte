@@ -4,10 +4,8 @@
   import { backIn, backOut } from 'svelte/easing';
   import { afterNavigate, beforeNavigate, disableScrollHandling, goto } from '$app/navigation';
 
-  import { toastStore } from '$lib/stores/toast';
-  import Navbar from '$comp/layout/navbar/Navbar.svelte';
-  import Footer from '$comp/layout/Footer.svelte';
-  import ToastContainer from '$comp/layout/ToastContainer.svelte';
+  import { toastStore } from '$lib/stores';
+  import { Footer, Navbar, ToastContainer } from '$comp/layout';
 
   export let data;
 

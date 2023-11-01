@@ -1,5 +1,5 @@
-import { axios } from '$lib/utils/axios.js';
 import { fail } from '@sveltejs/kit';
+import { axios } from '$lib/utils';
 
 export async function load({ params, fetch }) {
   const response = await fetch(
@@ -21,7 +21,7 @@ export const actions = {
       return fail(400, { content, missing: true });
     }
 
-    await axios.post(`/comments?includes=User`, {
+    await axios.post(`/comments`, {
       content,
       postId: params.id,
       authorId: locals.user.id

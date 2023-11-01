@@ -5,6 +5,7 @@ declare global {
       user: {
         id: number;
         username: string;
+        role: string;
       };
 
       logout: boolean;
@@ -58,6 +59,8 @@ declare global {
    */
   type AuthContent = {
     id: number;
+    role: 'super' | 'admin' | 'user';
+    username: string;
     accessToken: string;
     refreshToken: string;
   };
@@ -67,6 +70,8 @@ declare global {
   };
 
   type LoginDTO = { username: string; password: string };
+
+  type RegisterDTO = LoginDTO & { salt: string };
 
   type SaltResponse = { data: { salt?: string } };
 
@@ -88,6 +93,16 @@ declare global {
     type: ToastType;
     position: ToastPosition;
     duration: number;
+  }
+
+  interface ValidatedCreationData {
+    title?: string;
+    content?: string;
+    authorId?: number;
+    thumbnailUrl?: Blob;
+    tags: string;
+    category: string;
+    [key: string]: string | number | Blob | undefined;
   }
 
   interface ViewTransition {

@@ -1,15 +1,19 @@
 <script lang="ts">
-  import { normalizeDate } from '$lib/utils/normalizeDate.js';
   import { slide } from 'svelte/transition';
   import { page } from '$app/stores';
-
   import { enhance } from '$app/forms';
-  import { enhanceWithToast } from '$lib/utils/enhanceWithToast.js';
+
+  import { enhanceWithToast, normalizeDate } from '$lib/utils';
+  import { toastStore } from '$lib/stores';
+  import { FormError } from '$comp/general';
 
   export let data;
   export let form;
 
   $: post = data.post;
+  $: if (form?.missing) {
+    setTimeout(() => toastStore.addToast('Comment is required', 'error', 'top-right', 7500), 400);
+  }
 </script>
 
 <article class="max-w-7xl mx-auto my-4 p-4 sm:p-6 lg:p-8">
@@ -97,13 +101,13 @@
         disabled={!$page.data.user}
       />
       {#if form?.missing}
-        <p class="text-red-500">This field is required</p>
+        <FormError message="Comment is required" color="text-red-600" />
       {/if}
       <button
-        class="mt-2 px-4 py-2 bg-lime-600 text-white rounded-lg {$page.data.user && !form?.missing
+        class="mt-2 px-4 py-2 bg-lime-600 text-white rounded-lg {$page.data.user
           ? 'hover:bg-lime-700'
           : 'bg-gray-200 cursor-not-allowed'}"
-        disabled={!$page.data.user && !form?.missing}
+        disabled={!$page.data.user}
       >
         Submit
       </button>

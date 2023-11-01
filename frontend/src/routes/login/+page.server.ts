@@ -1,45 +1,45 @@
 import { fail, redirect } from '@sveltejs/kit';
-import { getUser, setCookies, useSalt } from './utils.js';
+import { ValidationError } from 'yup';
+
+import { getUser, loginSchema, useSalt } from './utils';
+import { catchValidationError, setCookies } from '$lib/utils';
 
 export const actions = {
   default: async ({ request, cookies }) => {
     const data = await request.formData();
-    const errors: Record<string, unknown> = {};
-
-    const username = String(data.get('username'));
-    const password = String(data.get('password'));
     const remember = Boolean(data.get('remember'));
+    const parsedData = Object.fromEntries(data);
 
-    if (!username) {
-      errors.username = 'required';
-    }
+    try {
+      const validatedData = await loginSchema.validate(
+        { ...parsedData, remember },
+        {
+          abortEarly: false
+        }
+      );
 
-    if (!password) {
-      errors.password = 'required';
-    }
+      const saltResponse = await useSalt({
+        username: validatedData.username,
+        password: validatedData.password
+      });
 
-    if (Object.keys(errors).length > 0) {
-      const returnData = {
-        data: Object.fromEntries(data),
-        errors
-      };
+      const user = await getUser(saltResponse);
 
-      return fail(400, returnData);
-    }
-
-    const saltResponse = await useSalt({ username, password });
-    const user = await getUser(saltResponse);
-
-    if (user) {
-      if (remember) {
-        setCookies(cookies, user, username);
-      } else {
-        setCookies(cookies, user, username);
+      if (user) {
+        if (remember) {
+          setCookies(cookies, user);
+        } else {
+          setCookies(cookies, user);
+        }
       }
+    } catch (error) {
+      if (error instanceof ValidationError) {
+        const returnData = catchValidationError(error, parsedData);
 
-      throw redirect(303, '/');
+        return fail(400, returnData);
+      }
     }
 
-    return fail(400);
+    throw redirect(303, '/');
   }
 };

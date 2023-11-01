@@ -1,6 +1,13 @@
-import { axios } from '$lib/utils/axios';
-import type { Cookies } from '@sveltejs/kit';
 import bcrypt from 'bcryptjs';
+import * as Yup from 'yup';
+
+import { axios } from '$lib/utils';
+
+export const loginSchema = Yup.object().shape({
+  username: Yup.string().required('Username is required'),
+  password: Yup.string().required('Password is required'),
+  remember: Yup.boolean().required()
+});
 
 export const getUser = (loginData: LoginDTO): Promise<AuthResponse> => {
   return axios.post<AuthContent>(`/login`, loginData);
@@ -37,22 +44,3 @@ export const useSalt = async (formData: LoginDTO): Promise<LoginDTO> => {
     };
   }
 };
-
-export const setCookies = async (
-  cookies: Cookies,
-  user: AuthResponse,
-  username: string
-): Promise<void> => {
-  cookies.set('jwt', user.data.accessToken, cookieSettings);
-  cookies.set('refresh', user.data.refreshToken, cookieSettings);
-  cookies.set('username', username, cookieSettings);
-  cookies.set('userid', String(user.data.id), cookieSettings);
-};
-
-export const cookieSettings = {
-  path: '/',
-  httpOnly: true,
-  sameSite: 'strict',
-  secure: process.env.NODE_ENV === 'production',
-  maxAge: 60 * 60 * 24 * 30
-} satisfies import('cookie').CookieSerializeOptions;

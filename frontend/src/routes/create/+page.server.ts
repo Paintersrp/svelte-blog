@@ -1,57 +1,41 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { axios } from '$lib/utils/axios';
 import { fail, redirect } from '@sveltejs/kit';
+import { ValidationError } from 'yup';
 
-import { z } from 'zod';
-
-const isBlob = (value: any): value is Blob => value instanceof Blob;
-
-const PostSchema = z.object({
-  title: z.string().min(1),
-  content: z.string().min(1),
-  authorId: z.number().min(1),
-  tags: z.string(),
-  category: z.string(),
-  thumbnailUrl: z.custom(isBlob, { message: 'Thumbnail must be a Blob' })
-});
+import { catchValidationError } from '$lib/utils';
+import { PostSchema, createPost } from './utils';
 
 export const actions = {
   addPost: async ({ request, locals }) => {
-    const data = Object.fromEntries(await request.formData());
+    const data = await request.formData();
+    const parsedData = Object.fromEntries(data);
+    const authorId = locals.user.id;
+
+    if (!authorId) {
+      fail(400);
+    }
+
     let postId: number;
 
     try {
-      const validatedData: {
-        [key: string]: string | number | Blob | undefined;
-        thumbnailUrl?: Blob;
-      } = PostSchema.parse({
-        ...data,
-        authorId: locals.user.id
-      });
+      await PostSchema.validate({ ...parsedData, authorId: locals.user.id }, { abortEarly: false });
 
-      const formData = new FormData();
+      data.append('authorId', String(authorId));
 
-      for (const key in validatedData) {
-        if (key === 'thumbnailUrl') {
-          formData.append(key, validatedData[key]!);
-        } else {
-          formData.append(key, validatedData[key]!.toString());
-        }
-      }
-
-      const post: App.Post = await axios
-        .post(`/posts`, formData, {
-          headers: { 'Content-Type': 'multipart/form-data' }
-        })
-        .then((res) => res.data.data);
-
+      const post = await createPost(data);
       postId = post.id;
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        return fail(400, { data, error: error.errors });
+      if (error instanceof ValidationError) {
+        const returnData = catchValidationError(error, {
+          title: parsedData.title,
+          category: parsedData.category,
+          tags: parsedData.tags,
+          content: parsedData.content,
+          thumbnailUrl: ''
+        });
+
+        return fail(400, returnData);
       }
 
-      console.error(error);
       return fail(500, { error: 'Internal Server Error' });
     }
 

@@ -1,17 +1,14 @@
 import Router from "koa-router";
-
 import { Logger } from "pino";
 import { InferCreationAttributes } from "sequelize";
+
 import { SyController } from "../../controller/SyController";
-
-import { AuthMessages } from "../../messages/services";
-
+import { AuthResponses, UserResponses } from "../../lib";
 import { JWTAuthService } from "../../auth/jwt";
 import { UserService } from "../../auth/user";
 
 import { User } from "./model";
 import { UserSchema } from "./schema";
-import { HttpStatus } from "../../lib";
 
 /**
  * @class UserController
@@ -87,17 +84,15 @@ export class UserController extends SyController {
   async register(ctx: Router.RouterContext): Promise<void> {
     const fields = ctx.request.body as InferCreationAttributes<User>;
 
-    console.log(fields);
-
     if (fields) {
       try {
         await User.create(fields);
-        ctx.body = AuthMessages.SUCCESS("User", "registration");
+        ctx.body = AuthResponses.SUCCESS("Registration");
         ctx.status = 200;
       } catch (error) {
         ctx.status = 500;
         ctx.body = {
-          message: AuthMessages.FAIL("User", "registration"),
+          message: AuthResponses.FAIL("Registration"),
           error: error,
         };
       }
@@ -120,7 +115,7 @@ export class UserController extends SyController {
 
     if (hasToken) {
       ctx.status = 403;
-      ctx.body = { message: AuthMessages.ALREADY_LOGGED_IN };
+      ctx.body = { message: AuthResponses.LOGGED_IN };
       return;
     }
 
@@ -128,7 +123,7 @@ export class UserController extends SyController {
       const user = await UserService.getByUsername(username);
 
       if (!user) {
-        ctx.throw(401, AuthMessages.USER_NOT_FOUND(username));
+        ctx.throw(401, UserResponses.NOT_FOUND(username));
       }
 
       console.log(password, user.password);
@@ -143,7 +138,7 @@ export class UserController extends SyController {
         );
 
         if (!isUnhashedPassword) {
-          ctx.throw(401, AuthMessages.INVALID_PASSWORD);
+          ctx.throw(401, AuthResponses.INVALID_PASSWORD);
         }
       }
 
@@ -173,13 +168,13 @@ export class UserController extends SyController {
       user.refreshToken = refreshToken;
       await user.save();
 
-      ctx.body = { id: user.id, accessToken, refreshToken };
+      ctx.body = { ...userDTO, accessToken, refreshToken };
       ctx.status = 200;
     } catch (error: any) {
       this.logger.error(error);
       ctx.status = 500;
       ctx.body = {
-        message: AuthMessages.FAIL("User", "login"),
+        message: AuthResponses.FAIL("Login"),
         error: error.message,
       };
     }
@@ -212,12 +207,12 @@ export class UserController extends SyController {
             ctx.status = 200;
           } else {
             ctx.status = 401;
-            ctx.body = AuthMessages.TOKEN_EXPIRED;
+            ctx.body = AuthResponses.TOKEN_EXPIRED;
           }
         }
       } catch (error) {
         ctx.status = 500;
-        ctx.body = AuthMessages.TOKEN_ERROR;
+        ctx.body = AuthResponses.TOKEN_ERROR;
       }
     }
   }
@@ -243,11 +238,11 @@ export class UserController extends SyController {
 
     try {
       JWTAuthService.clearCookies(ctx);
-      ctx.body = AuthMessages.SUCCESS("User", "logout");
+      ctx.body = AuthResponses.SUCCESS("Logout");
       ctx.status = 200;
     } catch (erorr) {
       ctx.status = 500;
-      ctx.body = AuthMessages.FAIL("User", "logout");
+      ctx.body = AuthResponses.FAIL("Logout");
     }
   }
 
@@ -267,7 +262,7 @@ export class UserController extends SyController {
 
     if (hasToken) {
       ctx.status = 403;
-      ctx.body = { message: AuthMessages.ALREADY_LOGGED_IN };
+      ctx.body = { message: AuthResponses.LOGGED_IN };
       return;
     }
 
@@ -278,13 +273,13 @@ export class UserController extends SyController {
         ctx.body = { salt: user.salt };
         ctx.status = 200;
       } else {
-        ctx.body = { message: AuthMessages.USER_NOT_FOUND(username) };
+        ctx.body = { message: UserResponses.NOT_FOUND(username) };
       }
     } catch (error: any) {
       this.logger.error(error);
       ctx.status = 500;
       ctx.body = {
-        message: AuthMessages.FAIL("User", "salt"),
+        message: AuthResponses.FAIL("Salt"),
         error: error.message,
       };
     }

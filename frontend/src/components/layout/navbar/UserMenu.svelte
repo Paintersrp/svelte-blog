@@ -74,7 +74,7 @@
 
       {#if $page.data.user}
         <a
-          href="/"
+          href="/admin"
           on:click={handleClick}
           class="block px-4 py-2 text-gray-700 hover:bg-lime-200 rounded-t-lg">Admin</a
         >

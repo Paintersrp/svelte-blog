@@ -2,9 +2,8 @@ import Router from "koa-router";
 import { Optional, Transaction } from "sequelize";
 
 import { SyMixin } from "../SyMixin";
-import { HttpStatus } from "../../../lib";
+import { ControllerResponses, HttpStatus } from "../../../lib";
 import { ControllerMixinOptions } from "../../types";
-import { ControllerMessages } from "../../../messages/services";
 // import * as settings from "../../../../settings";
 
 /**
@@ -61,7 +60,7 @@ export class SyCreateMixin extends SyMixin {
       ctx,
       HttpStatus.CREATED,
       itemWithQuery,
-      ControllerMessages.SUCCESS(this.getModelName(item), "create")
+      ControllerResponses.CREATE_SUCCESS(this.getModelName(item))
     );
   }
 
@@ -94,9 +93,8 @@ export class SyCreateMixin extends SyMixin {
       ctx,
       HttpStatus.CREATED,
       createdItems,
-      ControllerMessages.SUCCESS(
-        this.getModelNamePlural(createdItems[0]),
-        "create"
+      ControllerResponses.CREATE_SUCCESS(
+        this.getModelNamePlural(createdItems[0])
       )
     );
   }

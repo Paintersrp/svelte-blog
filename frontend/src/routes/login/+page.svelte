@@ -1,8 +1,19 @@
 <script lang="ts">
+  import { writable } from 'svelte/store';
   import { enhance } from '$app/forms';
-  import { redirectWithToast } from '$lib/utils/redirectWithToast.js';
+
+  import { redirectWithToast } from '$lib/utils';
+  import { toastStore } from '$lib/stores';
+  import { FormError, Loading } from '$comp/general';
 
   export let form;
+  const isLoading = writable(false);
+
+  $: if (form?.errors) {
+    Object.values(form.errors).forEach((error, index) => {
+      setTimeout(() => toastStore.addToast(error, 'error', 'top-right', 15000), 400 * index++);
+    });
+  }
 </script>
 
 <section class="flex flex-grow items-center justify-center p-8">
@@ -18,7 +29,7 @@
       <form
         method="POST"
         class="space-y-6"
-        use:enhance={() => redirectWithToast('Login Successful!')}
+        use:enhance={() => redirectWithToast({ message: 'Login Successful', isLoading })}
       >
         <div class="relative">
           <input
@@ -26,14 +37,14 @@
             name="username"
             type="text"
             placeholder=" "
-            value={form?.data.username ?? ''}
+            value={form?.data?.username ?? ''}
             class="block w-full p-2 border bg-gray-100 text-gray-800 mt-3"
           />
           <label for="username" class="absolute top-0 left-0 mt-2.5 ml-3 text-gray-700"
             >Username</label
           >
-          {#if form?.errors.username}
-            <p class="text-red-600 text-base mt-1 font-semibold">Username is required.</p>
+          {#if form?.errors?.username}
+            <FormError message={form?.errors?.username} size="sm" />
           {/if}
         </div>
         <div class="relative">
@@ -42,33 +53,40 @@
             name="password"
             type="password"
             placeholder=" "
-            value={form?.data.password ?? ''}
+            value={form?.data?.password ?? ''}
             class="block w-full p-2 border bg-gray-100 text-gray-800 mt-3"
           />
           <label for="password" class="absolute top-0 left-0 mt-2.5 ml-3 text-gray-700"
             >Password</label
           >
-          {#if form?.errors.password}
-            <p class="text-red-600 text-base mt-1 font-semibold">Password is required.</p>
+          {#if form?.errors?.password}
+            <FormError message={form?.errors?.password} size="sm" />
           {/if}
         </div>
         <div class="flex items-center justify-between mb-6">
           <div>
             <input
               name="remember"
-              id="remember-me"
+              id="remember"
               type="checkbox"
               class="form-checkbox h-4 w-4 text-lime-600"
             />
-            <label for="remember-me" class="ml-2 text-white text remember">Remember me</label>
+            <label for="remember" class="ml-2 text-white text remember">Remember me</label>
           </div>
         </div>
         <div>
           <button
+            aria-busy={$isLoading}
+            class:secondary={$isLoading}
             type="submit"
             class="w-full py-1.5 px-4 bg-white text-lime-600 font-semibold transition-colors hover:bg-lime-600 hover:text-white border border-white"
-            >Log in</button
           >
+            {#if $isLoading}
+              <Loading py="py-0" />
+            {:else}
+              Log in
+            {/if}
+          </button>
         </div>
       </form>
       <div class="mt-4 text-center">
@@ -85,15 +103,22 @@
 </section>
 
 <style>
+  .secondary {
+    background: white;
+  }
+
   .remember {
     font-size: 0.95rem !important;
   }
+
   .mb-class {
     margin-bottom: 5vh;
   }
+
   section {
     min-height: 100vh;
   }
+
   label {
     transform-origin: 0 0;
     transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),

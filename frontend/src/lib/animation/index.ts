@@ -1,0 +1,1 @@
+export { betterTweened } from './betterTweened';

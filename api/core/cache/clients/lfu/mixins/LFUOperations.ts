@@ -1,5 +1,5 @@
-import { CacheMessages } from '../../../../messages/services/cache';
-import { SyLFUCache } from '../SyLFUCache';
+import { CacheSystemResponses } from "../../../../lib";
+import { SyLFUCache } from "../SyLFUCache";
 
 /**
  * Class LFUOperations provides methods to interact with the LFU cache,
@@ -23,7 +23,11 @@ export class LFUOperations<T> {
    * @param {number | null} ttl - Optional TTL. If not provided, the default TTL is used.
    * @description Sets a value in the cache, creating a new entry or updating an existing one.
    */
-  public set(key: number, value: number, ttl: number | null = this.client.defaultTTL): void {
+  public set(
+    key: number,
+    value: number,
+    ttl: number | null = this.client.defaultTTL
+  ): void {
     if (this.client.isCacheEmpty()) {
       return;
     }
@@ -62,7 +66,7 @@ export class LFUOperations<T> {
     const node = this.client.cache.get(key);
 
     if (!node) {
-      this.client.logger.debug(CacheMessages.INFO(`${key} missed`));
+      this.client.logger.debug(CacheSystemResponses.CACHE_MISS(key));
       return this.client.incrementCacheMisses();
     }
 
@@ -81,7 +85,7 @@ export class LFUOperations<T> {
 
     this.client.frequencyManager.updateFrequency(node);
     this.client.incrementCacheHits();
-    this.client.logger.debug(CacheMessages.INFO(`${key} hit`));
+    this.client.logger.debug(CacheSystemResponses.CACHE_HIT(key));
 
     return node.value;
   }
@@ -113,7 +117,7 @@ export class LFUOperations<T> {
    */
   public clear(): void {
     this.client.cache.clear();
-    this.client.logger.info(CacheMessages.SUCCESS('Cache', 'clear'));
+    this.client.logger.info(CacheSystemResponses.CACHE_CLEAR);
   }
 
   /**
@@ -127,9 +131,9 @@ export class LFUOperations<T> {
       this.client.frequencyManager.removeNodeFromFrequencyList(node);
       this.client.cache.delete(key);
       this.client.size--;
-      this.client.logger.debug(CacheMessages.SUCCESS(String(key), 'delete'));
+      this.client.logger.debug(CacheSystemResponses.CACHE_DELETE(key));
     } else {
-      this.client.logger.warn(CacheMessages.FAIL(String(key), 'delete'));
+      this.client.logger.warn(CacheSystemResponses.CACHE_DELETE_FAIL(key));
     }
   }
 

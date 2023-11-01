@@ -1,11 +1,24 @@
 <script lang="ts">
+  import { writable } from 'svelte/store';
   import { enhance } from '$app/forms';
-  import { redirectWithToast } from '$lib/utils/redirectWithToast';
+
+  import { FormError, Loading } from '$comp/general';
+  import { toastStore } from '$lib/stores';
+  import { redirectWithToast } from '$lib/utils';
+
+  export let form;
+  const isLoading = writable(false);
+
+  $: if (form?.errors) {
+    Object.values(form.errors).forEach((error, index) => {
+      setTimeout(() => toastStore.addToast(error, 'error', 'top-right', 15000), 400 * index++);
+    });
+  }
 </script>
 
 <section class="flex flex-grow items-center justify-center p-8">
   <div
-    class="flex flex-col md:flex-row bg-white p-8 rounded-lg shadow-lg w-full max-w-5xl bg-gradient-to-r from-lime-500 to-lime-600 gap-8 mb-class"
+    class="flex flex-col md:flex-row bg-white p-8 rounded-lg shadow-lg w-full max-w-5xl bg-gradient-to-r from-lime-400 to-lime-400 gap-8 mb-class"
   >
     <div class="hidden md:flex md:w-1/2 px-6 py-2">
       <img src="/undraw_register.svg" alt="Illustration" class="w-full h-auto" />
@@ -16,7 +29,7 @@
         method="POST"
         action="?/register"
         class="space-y-6"
-        use:enhance={() => redirectWithToast('Registration Successful!')}
+        use:enhance={() => redirectWithToast({ message: 'Registration Successful!', isLoading })}
       >
         <div class="relative">
           <input
@@ -24,12 +37,15 @@
             name="username"
             type="username"
             placeholder=" "
+            value={form?.data?.username ?? ''}
             class="block w-full p-2 border bg-gray-100 text-gray-800 mt-3"
-            required
           />
           <label for="username" class="absolute top-0 left-0 mt-2.5 ml-3 text-gray-700"
             >Username</label
           >
+          {#if form?.errors.username}
+            <FormError message={form?.errors.username} size="sm" />
+          {/if}
         </div>
         <div class="relative">
           <input
@@ -37,12 +53,17 @@
             name="password"
             type="password"
             placeholder=" "
+            value={form?.data?.password ?? ''}
             class="block w-full p-2 border bg-gray-100 text-gray-800 mt-3"
-            required
           />
           <label for="password" class="absolute top-0 left-0 mt-2.5 ml-3 text-gray-700"
             >Password</label
           >
+          {#if form?.errors.password}
+            {#key 'error-password'}
+              <FormError message={form?.errors.password} size="sm" />
+            {/key}
+          {/if}
         </div>
         <div class="relative">
           <input
@@ -50,19 +71,27 @@
             name="confirm-password"
             type="password"
             placeholder=" "
+            value={form?.data['confirm-password'] ?? ''}
             class="block w-full p-2 border bg-gray-100 text-gray-800 mt-3"
-            required
           />
           <label for="confirm-password" class="absolute top-0 left-0 mt-2.5 ml-3 text-gray-700"
             >Confirm Password</label
           >
+          {#if form?.errors['confirm-password']}
+            <FormError message={form?.errors['confirm-password']} size="sm" />
+          {/if}
         </div>
         <div>
           <button
             type="submit"
             class="w-full py-1.5 px-4 bg-white text-lime-600 font-semibold transition-colors hover:bg-lime-600 hover:text-white border border-white"
-            >Sign Up</button
           >
+            {#if $isLoading}
+              <Loading py="py-0" />
+            {:else}
+              Sign Up
+            {/if}
+          </button>
         </div>
       </form>
       <div class="mt-4 text-center">

@@ -1,11 +1,17 @@
 <script lang="ts">
+  import { writable } from 'svelte/store';
   import { sineIn, sineOut } from 'svelte/easing';
   import { fly } from 'svelte/transition';
   import { enhance } from '$app/forms';
 
-  import { redirectWithToast } from '$lib/utils/redirectWithToast';
-  import Editor from '$comp/editor/Editor.svelte';
+  import { redirectWithToast } from '$lib/utils';
+  import { toastStore } from '$lib/stores';
 
+  import { Editor } from '$comp/editor';
+  import { FormError, Loading } from '$comp/general';
+
+  export let form;
+  const isLoading = writable(false);
   let postContent: string = '';
 
   $: step = 1;
@@ -25,7 +31,17 @@
   function handleSaveDraft() {
     // Implement save draft functionality
   }
+
+  $: if (form?.errors) {
+    Object.values(form.errors).forEach((error, index) => {
+      setTimeout(() => toastStore.addToast(error, 'error', 'top-right', 7500), 400 * index++);
+    });
+  }
 </script>
+
+<!-- <pre class="flex flex-grow">
+  {JSON.stringify(form, null, 2)}
+</pre> -->
 
 <div id="container" class="flex flex-col h-screen p-4 md:p-8">
   {#if step === 1}
@@ -62,9 +78,10 @@
         method="POST"
         action="?/addPost"
         enctype="multipart/form-data"
-        use:enhance={() => redirectWithToast('Post Successful!')}
+        use:enhance={() => redirectWithToast({ message: 'Post Successful!', isLoading })}
       >
         <h2 class="text-2xl font-bold text-gray-800">Publish</h2>
+
         <div class="flex flex-col mb-6">
           <label class="mb-2 text-gray-700" for="title">Title</label>
           <input
@@ -72,8 +89,12 @@
             id="title"
             name="title"
             placeholder="Title"
+            value={form?.data?.title ?? ''}
             class="p-2 border rounded"
           />
+          {#if form?.errors?.title}
+            <FormError message={form?.errors?.title} color="text-red-500" />
+          {/if}
         </div>
         <div class="flex flex-col mb-6">
           <label class="mb-2 text-gray-700" for="thumbnailUrl">Thumbnail</label>
@@ -84,6 +105,9 @@
             accept="image/*"
             class="p-2 border rounded"
           />
+          {#if form?.errors?.thumbnailUrl}
+            <FormError message={form?.errors?.thumbnailUrl} color="text-red-500" />
+          {/if}
         </div>
         <div class="flex flex-col mb-6">
           <label class="mb-2 text-gray-700" for="category">Category</label>
@@ -92,12 +116,26 @@
             id="category"
             name="category"
             placeholder="Category"
+            value={form?.data?.category ?? ''}
             class="p-2 border rounded"
           />
+          {#if form?.errors?.category}
+            <FormError message={form?.errors?.category} color="text-red-500" />
+          {/if}
         </div>
         <div class="flex flex-col mb-6">
           <label class="mb-2 text-gray-700" for="tags">Tags (comma-separated)</label>
-          <input type="text" id="tags" name="tags" placeholder="Tags" class="p-2 border rounded" />
+          <input
+            type="text"
+            id="tags"
+            name="tags"
+            placeholder="Tags"
+            value={form?.data?.tags ?? ''}
+            class="p-2 border rounded"
+          />
+          {#if form?.errors?.tags}
+            <FormError message={form?.errors?.tags} color="text-red-500" />
+          {/if}
         </div>
         <div>
           <input
@@ -109,9 +147,21 @@
             class="hidden"
           />
         </div>
+        {#if !postContent}
+          <div class="flex justify-center items-center w-full space-x-4">
+            <FormError message="Post Content is Required" color="text-red-500" />
+          </div>
+        {/if}
         <div class="flex justify-center items-center w-full space-x-4">
-          <button class="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition">
-            Publish
+          <button
+            disabled={!postContent}
+            class="px-6 py-2 min-w-[90px] bg-blue-500 text-white rounded hover:bg-blue-700 transition disabled:bg-gray-300"
+          >
+            {#if $isLoading}
+              <Loading py="py-0" />
+            {:else}
+              Publish
+            {/if}
           </button>
         </div>
       </form>

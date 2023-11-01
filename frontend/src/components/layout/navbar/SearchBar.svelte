@@ -9,12 +9,7 @@
   $: showDropdown = false;
 
   const debouncedSearch = debounce(async (query) => {
-    const response = await fetch(
-      `http://localhost:4000/posts?searchColumns=title&search=${query}&includes=User,Comment,Tag,Category`
-    ).then((res) => res.json());
-
-    searchResults = response.data.data;
-    showDropdown = searchResults.length > 0;
+    instantSearch(query);
   }, 300);
 
   const instantSearch = async (query: string) => {

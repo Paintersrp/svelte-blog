@@ -2,9 +2,7 @@
   import { flip } from 'svelte/animate';
   import { page } from '$app/stores';
   import Toast from './Toast.svelte';
-  import { toastStore } from '$lib/stores/toast';
-  import { navbarVisible } from '$lib/stores/navbar';
-  import { userMenuVisible } from '$lib/stores/usermenu';
+  import { toastStore, navbarVisible, userMenuVisible } from '$lib/stores';
 
   let marginTop: string;
 
