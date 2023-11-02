@@ -1,3 +1,7 @@
+<script>
+  export let data;
+</script>
+
 <div class="flex h-screen bg-gray-100">
   <!-- Sidebar -->
   <div class="bg-gray-800 p-4 w-64">

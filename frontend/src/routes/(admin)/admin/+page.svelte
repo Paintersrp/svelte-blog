@@ -1,4 +1,3 @@
-<!-- src/routes/admin/index.svelte -->
 <script lang="ts">
   import { goto } from '$app/navigation';
 
