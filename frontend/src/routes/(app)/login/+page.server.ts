@@ -24,6 +24,7 @@ export const actions = {
       });
 
       const user = await getUser(saltResponse);
+      console.log(user);
 
       if (user) {
         if (remember) {

@@ -25,14 +25,10 @@
   }
 </script>
 
-<!-- <Navbar /> -->
-
-<main>
+<main class="dark:bg-dark-50 bg-lime-200">
   <ToastContainer />
   <slot />
 </main>
-
-<!-- <Footer /> -->
 
 <style>
   :root {
@@ -41,11 +37,11 @@
     line-height: var(--line-height-base);
   }
 
-  :global(body) {
+  :global(main) {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    background-color: hsl(82 80% 96% / 1);
+    /* background-color: hsl(82 80% 96% / 1); */
     color: var(--textPrimary);
     scroll-behavior: smooth;
   }
@@ -58,10 +54,4 @@
     margin: 0;
     padding: 0;
   }
-
-  /* main {
-    background-color: hsl(82 80% 96% / 1);
-    color: var(--textPrimary);
-    padding-top: 4rem;
-  } */
 </style>

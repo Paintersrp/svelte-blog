@@ -13,18 +13,11 @@
   const durationProgress = betterTweened(0, { duration, easing: linear });
   let timeoutId: ReturnType<typeof setTimeout>;
 
-  const typeToColor: Record<typeof type, string> = {
-    info: 'bg-blue-500',
-    success: 'bg-lime-500',
-    warning: 'bg-yellow-500',
-    error: 'bg-red-500'
-  };
-
-  const typeToIcon: Record<typeof type, string> = {
-    info: 'info',
-    success: 'check_circle',
-    warning: 'warning',
-    error: 'error_outline'
+  const typeMap: Record<typeof type, Record<string, string>> = {
+    info: { color: 'bg-blue-500', icon: 'info' },
+    success: { color: 'bg-lime-500', icon: 'check_circle' },
+    warning: { color: 'bg-yellow-500', icon: 'warning' },
+    error: { color: 'bg-red-500', icon: 'error_outline' }
   };
 
   onMount(() => {
@@ -52,8 +45,8 @@
     }, duration - $durationProgress);
   }
 
-  $: bgColor = typeToColor[type];
-  $: icon = typeToIcon[type];
+  $: bgColor = typeMap[type].color;
+  $: icon = typeMap[type].icon;
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -62,7 +55,7 @@
   on:mouseleave={resumeToast}
   in:fly|local={{ x: 100, duration: 400, delay: 400, easing: backOut }}
   out:fly|local={{ x: 100, duration: 400, easing: backIn }}
-  class={`flex items-center opacity-100 ${bgColor} text-white px-4 py-2 rounded shadow-lg z-50 min-w-[275px] max-w-[275px] relative`}
+  class={`flex items-center opacity-100 ${bgColor} text-white px-4 py-2 rounded shadow-lg z-50 min-w-[225px] max-w-[225px] relative`}
 >
   <progress
     class="w-full absolute inset-x-0 bottom-0 h-[3px] rounded-b bg-gray-200 transition-all"

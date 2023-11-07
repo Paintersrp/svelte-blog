@@ -5,16 +5,14 @@
   import { enhance } from '$app/forms';
 
   import { redirectWithToast } from '$lib/utils';
-  import { toastStore } from '$lib/stores';
-
   import { Editor } from '$comp/editor';
   import { FormError, Loading } from '$comp/general';
 
   export let form;
   const isLoading = writable(false);
-  let postContent: string = '';
 
-  $: step = 1;
+  let errors: Record<string, string> = {};
+  let postContent: string = '';
 
   function handleNextStep() {
     step++;
@@ -32,10 +30,10 @@
     // Implement save draft functionality
   }
 
+  $: step = 1;
+
   $: if (form?.errors) {
-    Object.values(form.errors).forEach((error, index) => {
-      setTimeout(() => toastStore.addToast(error, 'error', 'top-right', 7500), 400 * index++);
-    });
+    errors = { ...form.errors };
   }
 </script>
 
@@ -43,19 +41,19 @@
   {JSON.stringify(form, null, 2)}
 </pre> -->
 
-<div id="container" class="flex flex-col h-screen p-4 md:p-8">
+<div id="container" class="flex flex-col h-screen p-1">
   {#if step === 1}
     <main
       id="content"
-      class="flex flex-col space-y-4 p-4 bg-gray-50 shadow-lg rounded-lg"
+      class="flex flex-col space-y-4"
       in:fly={{ x: -100, duration: 300, delay: 300, easing: sineOut }}
       out:fly={{ x: 100, duration: 300, easing: sineIn }}
     >
-      <h2 class="text-2xl font-bold text-gray-800">Compose Post</h2>
       <Editor bind:content={postContent} />
       <button
-        class="mt-4 px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition flex items-center justify-center"
+        class="mt-4 px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition flex items-center justify-center disabled:bg-gray-300"
         on:click={handleNextStep}
+        disabled={!postContent}
       >
         Next
         <svg
@@ -69,7 +67,7 @@
     </main>
   {:else if step === 2}
     <div
-      class="flex flex-col space-y-4 p-4 bg-gray-50 shadow-lg rounded-lg"
+      class="flex flex-col space-y-4 p-4 md:p-6 dark:bg-gray-800 shadow-md rounded-lg"
       in:fly={{ x: -100, duration: 300, delay: 300, easing: sineOut }}
       out:fly={{ x: 100, duration: 300, easing: sineIn }}
     >
@@ -92,8 +90,8 @@
             value={form?.data?.title ?? ''}
             class="p-2 border rounded"
           />
-          {#if form?.errors?.title}
-            <FormError message={form?.errors?.title} color="text-red-500" />
+          {#if errors.title}
+            <FormError message={errors.title} color="text-red-500" />
           {/if}
         </div>
         <div class="flex flex-col mb-6">
@@ -105,8 +103,8 @@
             accept="image/*"
             class="p-2 border rounded"
           />
-          {#if form?.errors?.thumbnailUrl}
-            <FormError message={form?.errors?.thumbnailUrl} color="text-red-500" />
+          {#if errors.thumbnailUrl}
+            <FormError message={errors.thumbnailUrl} color="text-red-500" />
           {/if}
         </div>
         <div class="flex flex-col mb-6">
@@ -119,8 +117,8 @@
             value={form?.data?.category ?? ''}
             class="p-2 border rounded"
           />
-          {#if form?.errors?.category}
-            <FormError message={form?.errors?.category} color="text-red-500" />
+          {#if errors.category}
+            <FormError message={errors.category} color="text-red-500" />
           {/if}
         </div>
         <div class="flex flex-col mb-6">
@@ -133,8 +131,8 @@
             value={form?.data?.tags ?? ''}
             class="p-2 border rounded"
           />
-          {#if form?.errors?.tags}
-            <FormError message={form?.errors?.tags} color="text-red-500" />
+          {#if errors.tags}
+            <FormError message={errors.tags} color="text-red-500" />
           {/if}
         </div>
         <div>
@@ -147,11 +145,6 @@
             class="hidden"
           />
         </div>
-        {#if !postContent}
-          <div class="flex justify-center items-center w-full space-x-4">
-            <FormError message="Post Content is Required" color="text-red-500" />
-          </div>
-        {/if}
         <div class="flex justify-center items-center w-full space-x-4">
           <button
             disabled={!postContent}

@@ -56,15 +56,18 @@
   <section class="prose prose-lg text-gray-500 mx-auto mb-12">
     {@html post.content}
   </section>
-  <footer class="pt-6 bg-lime-100 p-4 rounded-lg shadow-lg">
-    <div class="text-gray-500 text-sm mb-4">
+  <footer class="pt-8 bg-lime-100 dark:bg-dark-50 p-6 rounded-lg shadow">
+    <div class="text-gray-500 dark:text-gray-900 text-sm mb-6">
       {post.Comments.length}
       {post.Comments.length === 1 ? ' comment' : ' comments'}
     </div>
 
     {#each post.Comments as comment, index (comment.id)}
-      <div class="mt-6 pt-6 bg-lime-50 p-4 rounded-lg shadow-sm" transition:slide>
-        <div class="flex items-center mb-2">
+      <div
+        class="mt-8 pt-6 bg-lime-50 dark:bg-lime-700 p-6 rounded-lg shadow-sm transition-transform duration-300 ease-in-out"
+        transition:slide
+      >
+        <div class="flex items-center mb-4">
           <div class="mr-4">
             <img
               src="https://via.placeholder.com/50"
@@ -73,11 +76,11 @@
             />
           </div>
           <div class="flex w-full justify-between">
-            <span class="font-semibold text-gray-800">{comment.User.username}</span>
-            <span class="ml-2 text-sm text-gray-500">#{index + 1}</span>
+            <span class="font-medium text-gray-800 dark:text-gray-50">{comment.User.username}</span>
+            <span class="ml-2 text-sm text-gray-500 dark:text-gray-50">#{index + 1}</span>
           </div>
         </div>
-        <p class="text-sm text-gray-500">
+        <p class="text-sm text-gray-600 dark:text-gray-50">
           {comment.content}
         </p>
       </div>
@@ -86,27 +89,22 @@
     <form
       method="POST"
       action="?/addComment"
-      class="mt-6 border-t pt-6"
-      use:enhance={() => enhanceWithToast('Comment Succesful!')}
+      class="mt-8 border-t pt-6"
+      use:enhance={() => enhanceWithToast('Comment Successful!')}
     >
       <textarea
         id="content"
         name="content"
-        class="w-full p-2 border rounded-lg border-lime-500 focus:outline-none focus:ring-1 focus:ring-lime-500 {$page
-          .data.user
-          ? ''
-          : 'bg-gray-200 cursor-not-allowed'}"
+        class="w-full p-4 border border-lime-500 focus:outline-none focus:ring-1 focus:ring-lime-500 dark:bg-gray-700 dark:border-green-600 dark:text-white dark:placeholder-gray-400"
         placeholder={$page.data.user ? 'Add a comment...' : 'Login to add comments'}
         rows={4}
         disabled={!$page.data.user}
       />
       {#if form?.missing}
-        <FormError message="Comment is required" color="text-red-600" />
+        <FormError message="Comment is required" color="text-red-600 dark:text-red-400" />
       {/if}
       <button
-        class="mt-2 px-4 py-2 bg-lime-600 text-white rounded-lg {$page.data.user
-          ? 'hover:bg-lime-700'
-          : 'bg-gray-200 cursor-not-allowed'}"
+        class="mt-4 px-6 py-3 bg-green-600 dark:bg-green-700 text-white rounded-lg shadow hover:bg-green-700 dark:hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-500 transition-colors duration-300 ease-in-out"
         disabled={!$page.data.user}
       >
         Submit

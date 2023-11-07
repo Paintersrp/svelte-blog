@@ -6,6 +6,10 @@
 
   let marginTop: string;
 
+  function clearAllToasts() {
+    toastStore.clearAll();
+  }
+
   $: {
     if ($navbarVisible) {
       if ($userMenuVisible) {

@@ -3,16 +3,15 @@
   import { enhance } from '$app/forms';
 
   import { FormError, Loading } from '$comp/general';
-  import { toastStore } from '$lib/stores';
   import { redirectWithToast } from '$lib/utils';
 
   export let form;
   const isLoading = writable(false);
 
+  let errors: Record<string, string> = {};
+
   $: if (form?.errors) {
-    Object.values(form.errors).forEach((error, index) => {
-      setTimeout(() => toastStore.addToast(error, 'error', 'top-right', 15000), 400 * index++);
-    });
+    errors = { ...form.errors };
   }
 </script>
 
@@ -43,8 +42,8 @@
           <label for="username" class="absolute top-0 left-0 mt-2.5 ml-3 text-gray-700"
             >Username</label
           >
-          {#if form?.errors.username}
-            <FormError message={form?.errors.username} size="sm" />
+          {#if errors.username}
+            <FormError message={errors.username} size="sm" />
           {/if}
         </div>
         <div class="relative">
@@ -59,10 +58,8 @@
           <label for="password" class="absolute top-0 left-0 mt-2.5 ml-3 text-gray-700"
             >Password</label
           >
-          {#if form?.errors.password}
-            {#key 'error-password'}
-              <FormError message={form?.errors.password} size="sm" />
-            {/key}
+          {#if errors.password}
+            <FormError message={errors.password} size="sm" />
           {/if}
         </div>
         <div class="relative">
@@ -77,8 +74,8 @@
           <label for="confirm-password" class="absolute top-0 left-0 mt-2.5 ml-3 text-gray-700"
             >Confirm Password</label
           >
-          {#if form?.errors['confirm-password']}
-            <FormError message={form?.errors['confirm-password']} size="sm" />
+          {#if errors['confirm-password']}
+            <FormError message={errors['confirm-password']} size="sm" />
           {/if}
         </div>
         <div>

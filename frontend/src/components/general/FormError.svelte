@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { backOut, backIn, sineIn, sineOut } from 'svelte/easing';
-  import { fly, fade, slide } from 'svelte/transition';
+  import { sineIn, sineOut } from 'svelte/easing';
+  import { slide } from 'svelte/transition';
 
   export let message: string;
   export let color = 'text-lime-900';

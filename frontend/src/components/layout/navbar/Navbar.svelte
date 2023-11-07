@@ -30,7 +30,7 @@
 </script>
 
 <header
-  class={`fixed top-0 w-full bg-gradient-to-r from-lime-500 to-lime-600 p-4 transition-all duration-300 shadow-md ${
+  class={`min-h-[64px] fixed top-0 w-full bg-gradient-to-r from-lime-500 to-lime-600  p-4 transition-all duration-300 shadow-md ${
     $navbarVisible ? '' : '-translate-y-full'
   } ${$navbarVisible ? 'md:translate-y-0' : ''} z-10`}
 >

@@ -1,23 +1,11 @@
 <script lang="ts">
   import { fly } from 'svelte/transition';
   import { sineIn, sineOut } from 'svelte/easing';
-  import { afterNavigate, beforeNavigate, disableScrollHandling, goto } from '$app/navigation';
 
   import { toastStore } from '$lib/stores';
-  import { Footer, Navbar, ToastContainer } from '$comp/layout';
+  import { Footer, Navbar } from '$comp/layout';
 
   export let data;
-
-  beforeNavigate(() => {
-    toastStore.clearAll();
-  });
-
-  afterNavigate(() => {
-    disableScrollHandling();
-    setTimeout(() => {
-      scrollTo({ top: 0, behavior: 'instant' });
-    }, 400);
-  });
 
   function showToast() {
     toastStore.addToast('Login Successful!', 'success', 'top-right', 2000000);
@@ -30,38 +18,32 @@
   }
 
   $: pathname = data.url;
-  $: if (data.logout) {
-    goto('/').then(() =>
-      setTimeout(() => toastStore.addToast('Logout Successful!', 'success', 'top-right', 5000), 400)
-    );
-  }
 </script>
 
 <Navbar />
-<main>
-  {#key pathname}
-    <div
-      in:fly|local={{ x: -100, duration: 400, delay: 500, easing: sineOut }}
-      out:fly|local={{ x: 100, duration: 400, easing: sineIn }}
-    >
-      <button
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-20"
-        on:click={showToast}
-      >
-        Test Toast Button
-      </button>
-      <ToastContainer />
 
-      <slot />
-    </div>
-  {/key}
-</main>
+{#key pathname}
+  <div
+    in:fly|local={{ x: -100, duration: 400, delay: 500, easing: sineOut }}
+    out:fly|local={{ x: 100, duration: 400, easing: sineIn }}
+    class="padding-top"
+  >
+    <!-- <button
+      class="bg-blue-500 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-900 text-white font-bold py-2 px-4 rounded mt-20"
+      on:click={showToast}
+    >
+      Test Toast Button
+    </button> -->
+
+    <slot />
+  </div>
+{/key}
+
+
 <Footer />
 
 <style>
-  main {
-    background-color: hsl(82 80% 96% / 1);
-    color: var(--textPrimary);
-    /* padding-top: 4rem; */
+  .padding-top {
+    padding-top: 64px;
   }
 </style>

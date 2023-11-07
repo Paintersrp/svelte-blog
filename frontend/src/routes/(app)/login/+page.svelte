@@ -3,16 +3,14 @@
   import { enhance } from '$app/forms';
 
   import { redirectWithToast } from '$lib/utils';
-  import { toastStore } from '$lib/stores';
   import { FormError, Loading } from '$comp/general';
 
   export let form;
   const isLoading = writable(false);
+  let errors: Record<string, string> = {};
 
   $: if (form?.errors) {
-    Object.values(form.errors).forEach((error, index) => {
-      setTimeout(() => toastStore.addToast(error, 'error', 'top-right', 15000), 400 * index++);
-    });
+    errors = { ...form.errors };
   }
 </script>
 
@@ -43,8 +41,8 @@
           <label for="username" class="absolute top-0 left-0 mt-2.5 ml-3 text-gray-700"
             >Username</label
           >
-          {#if form?.errors?.username}
-            <FormError message={form?.errors?.username} size="sm" />
+          {#if errors.username}
+            <FormError message={errors.username} size="sm" />
           {/if}
         </div>
         <div class="relative">
@@ -59,8 +57,8 @@
           <label for="password" class="absolute top-0 left-0 mt-2.5 ml-3 text-gray-700"
             >Password</label
           >
-          {#if form?.errors?.password}
-            <FormError message={form?.errors?.password} size="sm" />
+          {#if errors.password}
+            <FormError message={errors.password} size="sm" />
           {/if}
         </div>
         <div class="flex items-center justify-between mb-6">

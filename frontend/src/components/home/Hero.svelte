@@ -23,7 +23,7 @@
   <div class="max-w-md mx-auto md:mx-0">
     <AnimatedText
       messages={categoryData}
-      textClass="text-2xl font-bold text-lime-900"
+      textClass="text-5xl font-bold text-lime-900"
       containerClass="w-full"
     />
     <h1 class="text-3xl mb-4 font-extrabold text-white">Engage with Our Community</h1>

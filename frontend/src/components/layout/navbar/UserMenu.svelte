@@ -57,6 +57,8 @@
         x: 100,
         easing: backIn
       }}
+      data-sveltekit-preload-data="false"
+      data-sveltekit-preload-code="false"
       class="absolute right-0 {marginTop} w-48 bg-white border border-gray-300 rounded-lg shadow-lg py-0 transition transform origin-top-right duration-500 ease-in-out"
     >
       {#if !$page.data.user}
@@ -88,7 +90,11 @@
           class="flex justify-between items-center px-4 py-2 border-t border-gray-200 text-gray-700 hover:bg-lime-200 rounded-b-lg"
         >
           <div class="text-gray-700">Dark Mode</div>
-          <input type="checkbox" class="toggle toggle-sm" />
+          <input
+            type="checkbox"
+            class="toggle toggle-sm"
+            on:click={() => document.body.classList.toggle('dark')}
+          />
         </div>
       {/if}
     </div>

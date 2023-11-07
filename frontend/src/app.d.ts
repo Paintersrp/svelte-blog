@@ -13,6 +13,14 @@ declare global {
     // interface PageData {}
     // interface Platform {}
 
+    type Project = {
+      id: number;
+      title: string;
+      description: string;
+      details: string;
+      imgUrl: string;
+    };
+
     interface User {
       id: number;
       username: string;
@@ -27,8 +35,6 @@ declare global {
       id: number;
       name: string;
     }
-
-    // on:mouseenter={() => durationProgress.pause()}
 
     interface Category {
       id: number | string;

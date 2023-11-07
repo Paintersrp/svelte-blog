@@ -98,28 +98,13 @@
 
 <Hero />
 <CategoryScroller {categories} on:categorySelect={handleCategorySelect} />
-<div id="container">
+<div id="container" class="flex justify-center">
   <!-- Update Sidebar to have buttons for categories on larger displays, hidden on smaller -->
   <!-- <HomeSidebar bind:search bind:posts bind:totalPosts /> -->
-  <main id="content">
+  <main id="content" class="max-w-[1000px] min-h-[60vh] w-full">
     <FullPosts bind:posts {currentCategories} on:hidePost={hidePost} />
     {#if isLoading}
       <Loading message="Loading more posts..." />
     {/if}
   </main>
 </div>
-
-<style>
-  #container {
-    display: flex;
-    background-color: var(--background);
-    color: var(--textPrimary);
-    justify-content: center;
-  }
-
-  #content {
-    width: 100%;
-    max-width: 1000px;
-    min-height: 60vh;
-  }
-</style>
